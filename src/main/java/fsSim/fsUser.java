@@ -125,14 +125,14 @@ public class fsUser {
         return true;
     }
 
-    public boolean manageGroups(String groupName, boolean add) {
+    public boolean manageGroups(String groupGUID, boolean add) {
         if (add)
-            if (!groupID.contains(groupName))
-                groupID.add(groupName);
+            if (!groupID.contains(groupGUID))
+                groupID.add(groupGUID);
             else
                 return false;
         else
-            groupID.remove(groupName);
+            groupID.remove(groupGUID);
 
         return true;
     }

@@ -89,7 +89,7 @@ public class fsSimManager {
         return groups_by_guid;
     }
 
-    public bool create(String path, Class type) {
+    public boolean create(String path, Class type) {
         String[] dirs = path.split("/");
         fsDir current_dir = filesystem_root;
 
