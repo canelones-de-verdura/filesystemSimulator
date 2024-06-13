@@ -33,7 +33,7 @@ public class fsSimManager {
         String[] dirs = path.split("/");
         fsDir current_dir = filesystem_root;
 
-        for (int i = 0; i < dirs.length - 1; ++i) {
+        for (int i = 1; i < dirs.length - 1; ++i) {
             current_dir = (fsDir) current_dir.getElement(dirs[i]);
             if (current_dir == null)
                 return null;
