@@ -26,6 +26,8 @@ public class fsSimManager {
 
         // Creamos la estructura de carpetas
         this.filesystem_root = new fsDir("", null, groot.getUID(), root_group.getGUID());
+        // Arreglamos la referencia a ".."
+        this.filesystem_root.changeParent(filesystem_root);
         generateFileStructure();
     }
 

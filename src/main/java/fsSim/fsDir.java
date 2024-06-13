@@ -78,11 +78,18 @@ public class fsDir implements fsIElement {
     public void move(fsIElement element) {
         last_access_d = last_modified_d = new Date();
         contents.put(element.getName(), element);
+        if (element instanceof fsDir) {
+            ((fsDir) element).changeParent(this);
+        }
     }
 
     public void remove(String name) {
         last_access_d = last_modified_d = new Date();
         contents.remove(name);
+    }
+
+    public void changeParent(fsIElement new_parent) {
+        contents.replace("..", new_parent);
     }
 
 }
