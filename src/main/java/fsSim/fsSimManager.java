@@ -33,6 +33,9 @@ public class fsSimManager {
         String[] dirs = path.split("/");
         fsDir current_dir = filesystem_root;
 
+        if (dirs.length == 0)
+            return current_dir;
+
         for (int i = 1; i < dirs.length - 1; ++i) {
             String jumpto = dirs[i];
             if (jumpto != null) {
