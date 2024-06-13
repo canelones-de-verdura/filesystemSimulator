@@ -89,6 +89,31 @@ public class fsSimManager {
         return groups_by_guid;
     }
 
+    public bool create(String path, Class type) {
+        String[] dirs = path.split("/");
+        fsDir current_dir = filesystem_root;
+
+        for (int i = 1; i < dirs.length - 1; ++i) {
+            String jumpto = dirs[i];
+            if (jumpto != null) {
+                current_dir = (fsDir) current_dir.getElement(jumpto);
+                if (current_dir == null)
+                    return false;
+            }
+        }
+
+        fsIElement new_elem;
+        if (type == fsDir.class) {
+            new_elem = new fsDir(dirs[dirs.length - 1], current_dir, "", "");
+            current_dir.move(new_elem);
+        } else {
+            new_elem = new fsFile(dirs[dirs.length - 1], "", "");
+            // TODO: arreglar move en fsDir
+        }
+
+        return true;
+    }
+
     /* Auxiliares */
     private void updatePasswdFile(fsUser user, boolean add) {
         // user:passwd:uid:guid:comentarios:home:shell
