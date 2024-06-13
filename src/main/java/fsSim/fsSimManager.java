@@ -34,9 +34,12 @@ public class fsSimManager {
         fsDir current_dir = filesystem_root;
 
         for (int i = 1; i < dirs.length - 1; ++i) {
-            current_dir = (fsDir) current_dir.getElement(dirs[i]);
-            if (current_dir == null)
-                return null;
+            String jumpto = dirs[i];
+            if (jumpto != null) {
+                current_dir = (fsDir) current_dir.getElement(jumpto);
+                if (current_dir == null)
+                    return null;
+            }
         }
 
         return current_dir.getElement(dirs[dirs.length - 1]);
