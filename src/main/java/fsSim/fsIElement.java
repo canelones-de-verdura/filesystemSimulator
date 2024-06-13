@@ -1,3 +1,22 @@
 package fsSim;
 
-public interface fsIElement {}
+import java.util.Date;
+
+public interface fsIElement {
+    public String getName();
+
+    public String getOwnerID();
+
+    public String getGUID();
+
+    public String getPermissions();
+
+    public int getSize();
+
+    public Date getCreationDate();
+
+    public Date getAccessDate();
+
+    public Date getModifiedDate();
+
+}

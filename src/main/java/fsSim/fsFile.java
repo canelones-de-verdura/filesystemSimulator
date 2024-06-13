@@ -4,56 +4,109 @@ import java.util.Date;
 import java.util.concurrent.Semaphore;
 
 public class fsFile implements fsIElement {
-    public String name;
-    public String owner;
-    public String guid;
-    public String permissions;
-    public int size;
+    private String name;
+    private String ownerID;
+    private String groupID; // TODO manejar permisos
+    private String permissions;
+    private int size; // TODO manejar el tema del size
 
     // Metadata
-    public String created_d;
-    public String last_modified_d;
+    private Date created_d;
+    private Date last_access_d;
+    private Date last_modified_d;
 
     // Semáforo para evitar accesos concurrentes
     private Semaphore semi;
+    private Thread workingThread;
 
     private String data;
 
-    public fsFile(String name) {
+    public fsFile(String name, String uid, String guid) {
         this.name = name;
-        this.last_modified_d = this.created_d = new Date().toString();
+        this.ownerID = uid;
+        this.groupID = guid;
+        this.last_access_d = this.last_modified_d = this.created_d = new Date();
         this.semi = new Semaphore(1);
+        this.data = null;
+        this.workingThread = null;
 
         // ... ?
     }
 
-    private void open() {
-        try {
-			semi.acquire();
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-            System.out.println("🥱");
-		}
+    /* Getters */
+    public String getName() {
+        return name;
     }
 
-    private void close() {
+    public String getOwnerID() {
+        return ownerID;
+    }
+
+    public String getGUID() {
+        return groupID;
+    }
+
+    public String getPermissions() {
+        return permissions;
+    }
+
+    public int getSize() {
+        return size;
+    }
+
+    public Date getCreationDate() {
+        return created_d;
+    }
+
+    public Date getAccessDate() {
+        return last_access_d;
+    }
+
+    public Date getModifiedDate() {
+        return last_modified_d;
+    }
+
+    /* Primitivas para manejar archivos */
+    public void open() {
+        try {
+            semi.acquire();
+            workingThread = Thread.currentThread();
+            last_access_d = new Date();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+            System.out.println("🥱");
+        }
+    }
+
+    public void close() {
+        workingThread = null;
         semi.release();
     }
 
-    public void write(String new_data, boolean overwrite) {
-        // TODO
-        // De seguro hay una mejor manera de manejar los opens.
-        open();
-        if (overwrite) {
-            data = new_data;
-        } else {
-            data.concat(new_data);
+    public synchronized boolean write(String new_data, boolean overwrite) {
+        if (semi.availablePermits() != 0)
+            return false;
+
+        if (workingThread != Thread.currentThread())
+            return false;
+
+        try {
+            if (overwrite || (data == null)) {
+                data = new_data;
+            } else {
+                data.concat(new_data);
+            }
+            last_modified_d = new Date();
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println("🥱");
+            return false;
         }
-        last_modified_d = new Date().toString();
-        close();
     }
 
     public String read() {
+        last_access_d = new Date();
         return data;
     }
 }

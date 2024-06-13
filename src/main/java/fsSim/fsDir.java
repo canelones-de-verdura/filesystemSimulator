@@ -3,39 +3,85 @@ package fsSim;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 public class fsDir implements fsIElement {
-    public String name;
-    public String owner;
-    public String guid;
-    public String permissions;
+    private String name;
+    private String ownerID;
+    private String groupID; // TODO manejar permisos
+    private String permissions;
+    private int size; // TODO manejar el tema del size
+
     // Metadata
-    public String created_d;
-    public String last_modified_d;
+    private Date created_d;
+    private Date last_access_d;
+    private Date last_modified_d;
 
-    public Map<String, fsIElement> contents;
+    private Map<String, fsIElement> contents;
 
-    public fsDir(String name, fsDir parent) {
+    public fsDir(String name, fsDir parent, String uid, String guid) {
         this.name = name;
+        this.ownerID = uid;
+        this.groupID = guid;
         this.contents = new HashMap<>();
         this.contents.put("..", parent);
         this.contents.put(".", this);
-        this.last_modified_d = this.created_d = new Date().toString();
+        this.last_access_d = this.last_modified_d = this.created_d = new Date();
         // ...?
 
     }
 
-    public fsIElement getContents(String name) {
+    /* Getters */
+    public String getName() {
+        return name;
+    }
+
+    public String getOwnerID() {
+        return ownerID;
+    }
+
+    public String getGUID() {
+        return groupID;
+    }
+
+    public String getPermissions() {
+        return permissions;
+    }
+
+    public int getSize() {
+        return size;
+    }
+
+    public Date getCreationDate() {
+        return created_d;
+    }
+
+    public Date getAccessDate() {
+        return last_access_d;
+    }
+
+    public Date getModifiedDate() {
+        return last_modified_d;
+    }
+
+    /* Primitivas para manejar directorios */
+    public fsIElement getElement(String name) {
+        last_access_d = new Date();
         return contents.get(name);
     }
 
-    public void create(String name, boolean dir) {
-        fsIElement new_elem = dir ? new fsDir(name, this) : new fsFile(name);
+    public Set<String> getContents() {
+        last_access_d = new Date();
+        return this.contents.keySet();
+    }
 
-        contents.put(name, new_elem);
+    public void move(fsIElement element) {
+        last_access_d = last_modified_d = new Date();
+        contents.put(element.getName(), element);
     }
 
     public void remove(String name) {
+        last_access_d = last_modified_d = new Date();
         contents.remove(name);
     }
 
