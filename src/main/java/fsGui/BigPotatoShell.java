@@ -3,13 +3,13 @@ package fsGui;
  * Clase que implementa un shell simple.
  * Es el nexo entre la interfaz gráfica y la lógica de ejecución de comandos.
  */
-public class SimpleShell {
+public class BigPotatoShell {
     
     private String PWD;
     private String USER;
     private String HOST;
 
-    public SimpleShell() {
+    public BigPotatoShell() {
         PWD = "/";
         USER = "user";
         HOST = "localhost";
@@ -25,13 +25,24 @@ public class SimpleShell {
         return HOST;
     }
 
+    private CommandFactory commandFactory = new CommandFactory();
+
     /**
      * Procesa un comando ingresado por el usuario.
      * @param command Comando ingresado por el usuario.
      * @return Resultado de la ejecución del comando.
      */
     public String proccessCommand(String command) {
-        String onlyCommand = command.split(" ")[0];
+        StringBuilder response = new StringBuilder();
+        String[] parts = command.split(" ");
+        String commandName = parts[0];
+        String message = command.substring(commandName.length()).trim();
+        commandFactory.handleCommand(commandName, message, response);
+        return response.toString();
+    }
+
+    /*
+     * String onlyCommand = command.split(" ")[0];
         switch (onlyCommand) {
             case "help":
                 return help();
@@ -61,26 +72,5 @@ public class SimpleShell {
             default:
                 return "Comando \""+command+"\" no reconocido.";
         }
-    }
-
-    /**
-     * Muestra información de ayuda sobre los comandos disponibles.
-     * @return La lista de comandos disponibles.
      */
-    public String help() {
-        StringBuilder sb = new StringBuilder();
-        sb.append("Comandos disponibles:\n");
-        sb.append("help: Muestra la lista de comandos disponibles.\n");
-        sb.append("exit: Cierra el shell.\n");
-        // TODO Agregar los comandos disponibles cuando estén implementados.
-        return sb.toString();
-    }
-    /**
-     * Muestra el comando ingresado.
-     * @param command Comando ingresado por el usuario.
-     * @return El comando ingresado.
-     */
-    public String echo(String command) {
-        return command.replace("echo ", "").replace("\"", "");
-    }
 }

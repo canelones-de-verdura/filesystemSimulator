@@ -44,7 +44,7 @@ public class SimpleNano {
                     switch (e.getKeyCode()) {
                         case KeyEvent.VK_S:
                             // Si el archivo no tiene nombre, pedirlo
-                            if (filename.equals("Untitled")) {
+                            if (filename.equals("Sin nombre")) {
                                 String name = JOptionPane.showInputDialog(frame, "Nombre del archivo:");
                                 if (name != null) {
                                     SimpleNano.this.filename = name;
@@ -69,7 +69,7 @@ public class SimpleNano {
                             } catch (BadLocationException ex) {
                                 ex.printStackTrace();
                             }
-                            JOptionPane.showMessageDialog(frame, "Line: " + (line + 1) + ", Column: " + (column + 1), "Cursor Position", JOptionPane.INFORMATION_MESSAGE);
+                            JOptionPane.showMessageDialog(frame, "Línea: " + (line + 1) + ", Columna: " + (column + 1), "Posición del cursor", JOptionPane.INFORMATION_MESSAGE);
                             break;
                     }
                 }
@@ -78,7 +78,7 @@ public class SimpleNano {
     }
 
     private void saveFile() {
-        // TODO Implementar la lógica para guardar el archivo.
+        // TODO Implementar la lógica para guardar el archivo en el sistema de archivos
         frame.dispose();
     }
 

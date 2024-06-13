@@ -10,7 +10,7 @@ public class SimpleTerminal {
     JFrame f;
     JTextPane terminal;
     JTextField inputField;
-    SimpleShell shell;
+    BigPotatoShell shell;
     ArrayList<String> commandHistory; // Historial de comandos ingresados.
     int historyIndex; // Índice del comando actual en el historial.
     Style userCommandStyle;
@@ -20,11 +20,12 @@ public class SimpleTerminal {
         f = new JFrame();
         terminal = new JTextPane();
         terminal.setEditable(false);
+        f.setTitle("BigPotato Terminal");
         JScrollPane scrollPane = new JScrollPane(terminal);
         scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
         scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         inputField = new JTextField();
-        shell = new SimpleShell();
+        shell = new BigPotatoShell();
 
         // Estilo para los comandos del usuario.
         StyledDocument doc = terminal.getStyledDocument();
@@ -41,6 +42,7 @@ public class SimpleTerminal {
                 String command = inputField.getText();
                 appendToTerminal(formatUserInput(command), userCommandStyle);
                 appendToTerminal(shell.proccessCommand(command), shellResponseStyle);
+                terminal.setCaretPosition(terminal.getDocument().getLength());
                 commandHistory.add(command);
                 historyIndex = commandHistory.size();
                 inputField.setText("");
@@ -67,7 +69,7 @@ public class SimpleTerminal {
             }
         });
 
-        appendToTerminal("####### Welcome to the SimpleTerminal of Eze & Faq #######\n\n", null);
+        appendToTerminal("####### Bienvenido al BigPotato Terminal #######", userCommandStyle);
         f.add(scrollPane, BorderLayout.CENTER);
         f.add(inputField, BorderLayout.SOUTH);
         f.setSize(600, 450);
