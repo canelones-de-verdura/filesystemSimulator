@@ -105,6 +105,7 @@ public class fsFile implements fsIElement {
         }
     }
 
+    // TODO: Hacer validación de semáforo y thread???
     public String read() {
         last_access_d = new Date();
         return data;
