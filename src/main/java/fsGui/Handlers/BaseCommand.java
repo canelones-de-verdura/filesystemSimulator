@@ -21,7 +21,7 @@ public abstract class BaseCommand {
     }
 
     // Método abstracto que deben sobrescribir las subclases para manejar el mensaje
-    protected abstract void internalHandle(String message, StringBuilder response);
+    protected abstract void internalHandle(String message, StringBuilder response, fsGui.BigPotatoShell shell);
 
     // Determina si este handler puede procesar el mensaje
     protected boolean canHandle(String message) {
@@ -53,9 +53,9 @@ public abstract class BaseCommand {
     }
 
     // Maneja el mensaje.
-    public boolean handle(String message, StringBuilder response) {
+    public boolean handle(String message, StringBuilder response, fsGui.BigPotatoShell shell) {
         if (canHandle(message)) {
-            internalHandle(message, response);
+            internalHandle(message, response, shell);
             return true;
         } 
         return false;

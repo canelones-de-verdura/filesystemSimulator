@@ -81,7 +81,7 @@ public class SimpleTerminal {
     }
 
     public String formatUserInput(String input) {
-        return shell.getUSER() + "@" + shell.getHOST() + ":" + shell.getPWD() + "$ " + input;
+        return shell.USER + "@" + shell.HOST + ":" + shell.PWD + "$ " + input;
     }
 
     public void appendToTerminal(String text, Style style) {

@@ -8,7 +8,7 @@ public class EchoCommand extends BaseCommand {
     }
 
     @Override
-    protected void internalHandle(String message, StringBuilder response) {
+    protected void internalHandle(String message, StringBuilder response, fsGui.BigPotatoShell shell) {
         response.append(message);
     }
 

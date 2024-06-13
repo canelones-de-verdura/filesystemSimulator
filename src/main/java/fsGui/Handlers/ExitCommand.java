@@ -9,7 +9,7 @@ public class ExitCommand extends BaseCommand {
     }
 
     @Override
-    protected void internalHandle(String message, StringBuilder response) {
+    protected void internalHandle(String message, StringBuilder response, fsGui.BigPotatoShell shell) {
         System.exit(0);
         return;
     }

@@ -10,7 +10,7 @@ public class ENanoCommand extends BaseCommand {
     }
 
     @Override
-    protected void internalHandle(String message, StringBuilder response) {
+    protected void internalHandle(String message, StringBuilder response, fsGui.BigPotatoShell shell) {
         new SimpleNano(!message.isEmpty() ? message : "Sin nombre");
         return;
     }

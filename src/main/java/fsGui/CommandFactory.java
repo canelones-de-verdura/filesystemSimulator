@@ -29,10 +29,10 @@ public class CommandFactory {
         return null;
     }
 
-    public void handleCommand(String commandName, String message, StringBuilder response) {
+    public void handleCommand(String commandName, String message, StringBuilder response, BigPotatoShell shell) {
         BaseCommand command = getCommand(commandName);
         if (command != null) {
-            boolean wasSuccess = command.handle(message, response);
+            boolean wasSuccess = command.handle(message, response, shell);
             if (!wasSuccess) {
                 response.append("Error al procesar el comando");
             }

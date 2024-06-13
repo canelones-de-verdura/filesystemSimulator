@@ -8,7 +8,7 @@ public class ManCommand extends BaseCommand {
     }
 
     @Override
-    protected void internalHandle(String message, StringBuilder response) {
+    protected void internalHandle(String message, StringBuilder response, fsGui.BigPotatoShell shell) {
         // Si el mensaje no tiene argumentos, se muestra el mensaje de ayuda general
         if (message.isEmpty()) {
             // Recorre todos los comandos registrados y muestra su ayuda

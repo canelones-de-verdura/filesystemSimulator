@@ -5,9 +5,9 @@ package fsGui;
  */
 public class BigPotatoShell {
     
-    private String PWD;
-    private String USER;
-    private String HOST;
+    public String PWD;
+    public String USER;
+    public String HOST;
 
     public BigPotatoShell() {
         PWD = "/";
@@ -15,15 +15,6 @@ public class BigPotatoShell {
         HOST = "localhost";
     }
 
-    public String getPWD() {
-        return PWD;
-    }
-    public String getUSER() {
-        return USER;
-    }
-    public String getHOST() {
-        return HOST;
-    }
 
     private CommandFactory commandFactory = new CommandFactory();
 
@@ -37,7 +28,7 @@ public class BigPotatoShell {
         String[] parts = command.split(" ");
         String commandName = parts[0];
         String message = command.substring(commandName.length()).trim();
-        commandFactory.handleCommand(commandName, message, response);
+        commandFactory.handleCommand(commandName, message, response, this);
         return response.toString();
     }
 
