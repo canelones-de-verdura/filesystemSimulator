@@ -3,6 +3,7 @@ package fsSim;
 import java.util.HashMap;
 import java.util.Map;
 
+// TODO: Cambiar bools por ints para los valores de retorno?
 public class fsSimManager {
     private fsUser groot;
     private fsGroup root_group;
@@ -89,9 +90,64 @@ public class fsSimManager {
         return groups_by_guid;
     }
 
-    public boolean create(String path, Class type) {
+    public boolean createFile(String path, fsUser creator) {
+        // Obtenemos la referencia de la carpeta padre
         String[] dirs = path.split("/");
         fsDir current_dir = filesystem_root;
+        String name = dirs[dirs.length - 1] == null ? dirs[dirs.length - 1] : dirs[dirs.length - 2];
+
+        for (int i = 1; i < dirs.length - 1; ++i) {
+            String jumpto = dirs[i];
+            if (jumpto != null) {
+                current_dir = (fsDir) current_dir.getElement(jumpto);
+                // Chequeamos que el directorio exista
+                if (current_dir == null)
+                    return false;
+            }
+        }
+
+        // Chequeamos que el nombre del nuevo elemento ya no esté en uso
+        if (current_dir.getElement(name) != null)
+            return false;
+
+        // Creamos y colocamos el archivo
+        fsFile new_elem = new fsFile(name, creator.getUID(), creator.getGUID());
+        current_dir.move(new_elem);
+        return true;
+    }
+
+    public boolean createDir(String path, fsUser creator) {
+        // Obtenemos la referencia de la carpeta padre
+        String[] dirs = path.split("/");
+        fsDir current_dir = filesystem_root;
+        String name = dirs[dirs.length - 1] == null ? dirs[dirs.length - 1] : dirs[dirs.length - 2];
+
+        for (int i = 1; i < dirs.length - 1; ++i) {
+            String jumpto = dirs[i];
+            if (jumpto != null) {
+                current_dir = (fsDir) current_dir.getElement(jumpto);
+                // Chequeamos que el directorio exista
+                if (current_dir == null)
+                    return false;
+            }
+        }
+
+        // Chequeamos que el nombre del nuevo elemento ya no esté en uso
+        if (current_dir.getElement(name) != null)
+            return false;
+
+        // Creamos y colocamos el directorio
+        fsDir new_elem = new fsDir(name, current_dir, creator.getUID(), creator.getGUID());
+        current_dir.move(new_elem);
+        return true;
+    }
+
+    public boolean createLink(String reference_path, String new_path, fsUser creator) {
+        // Obtenemos la referencia al elemento original
+        String[] dirs = reference_path.split("/");
+        fsDir current_dir = filesystem_root;
+        String r_name = dirs[dirs.length - 1] == null ? dirs[dirs.length - 1] : dirs[dirs.length - 2];
+        fsIElement reference;
 
         for (int i = 1; i < dirs.length - 1; ++i) {
             String jumpto = dirs[i];
@@ -102,15 +158,36 @@ public class fsSimManager {
             }
         }
 
-        fsIElement new_elem;
-        if (type == fsDir.class) {
-            new_elem = new fsDir(dirs[dirs.length - 1], current_dir, "", "");
-            current_dir.move(new_elem);
-        } else {
-            new_elem = new fsFile(dirs[dirs.length - 1], "", "");
-            // TODO: arreglar move en fsDir
+        reference = current_dir.getElement(r_name);
+        if (reference == null)
+            return false;
+
+        // Obtenemos la referencia al directorio donde va el link
+        current_dir = filesystem_root;
+        dirs = new_path.split("/");
+        String n_name = dirs[dirs.length - 1] == null ? dirs[dirs.length - 1] : dirs[dirs.length - 2];
+
+        for (int i = 1; i < dirs.length - 1; ++i) {
+            String jumpto = dirs[i];
+            if (jumpto != null) {
+                current_dir = (fsDir) current_dir.getElement(jumpto);
+                if (current_dir == null)
+                    return false;
+            }
         }
 
+        // Si la ruta de destino no incluye el nombre nuevo, entonces usa el mismo que el archivo original
+        if (!current_dir.getName().equals(n_name)) {
+            // Chequeamos que el nombre del nuevo elemento ya no esté en uso
+            if (current_dir.getElement(n_name) != null)
+                return false;
+        } else {
+            n_name = r_name;
+        }
+
+        // Creamos y colocamos el archivo
+        fsIElement new_elem = new fsLink(reference, n_name, creator.getUID(), creator.getGUID());
+        current_dir.move(new_elem);
         return true;
     }
 
