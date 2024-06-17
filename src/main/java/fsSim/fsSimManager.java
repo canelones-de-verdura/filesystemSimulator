@@ -210,7 +210,7 @@ public class fsSimManager {
     }
 
     private void updateGroupFile(fsGroup group) {
-        // group:gui
+        // group:guid
         String line = String.format("%s:%s\n", group.getName(), group.getGUID());
 
         fsFile passwd = (fsFile) getElementInFs("/etc/group");
