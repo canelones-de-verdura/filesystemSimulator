@@ -137,9 +137,7 @@ public class fsSimManager {
     }
 
     public Map<String, fsUser> getAllTheUsers() {
-        if (current_user == null)
-            throw new RuntimeException("Not logged in.");
-
+        // Al igual que getElementInFs(...) no podemos romper todo si el usuario no está logueado
         return users_by_uid;
     }
 
@@ -157,7 +155,7 @@ public class fsSimManager {
         // Obtenemos la referencia de la carpeta padre
         String[] dirs = path.split("/");
         fsDir current_dir = filesystem_root;
-        String name = dirs[dirs.length - 1] == null ? dirs[dirs.length - 1] : dirs[dirs.length - 2];
+        String name = dirs[dirs.length - 1] == null ? dirs[dirs.length - 2] : dirs[dirs.length - 1];
 
         for (int i = 1; i < dirs.length - 1; ++i) {
             String jumpto = dirs[i];
@@ -186,7 +184,7 @@ public class fsSimManager {
         // Obtenemos la referencia de la carpeta padre
         String[] dirs = path.split("/");
         fsDir current_dir = filesystem_root;
-        String name = dirs[dirs.length - 1] == null ? dirs[dirs.length - 1] : dirs[dirs.length - 2];
+        String name = dirs[dirs.length - 1] == null ? dirs[dirs.length - 2] : dirs[dirs.length - 1];
 
         for (int i = 1; i < dirs.length - 1; ++i) {
             String jumpto = dirs[i];
@@ -215,7 +213,7 @@ public class fsSimManager {
         // Obtenemos la referencia al elemento original
         String[] dirs = reference_path.split("/");
         fsDir current_dir = filesystem_root;
-        String r_name = dirs[dirs.length - 1] == null ? dirs[dirs.length - 1] : dirs[dirs.length - 2];
+        String r_name = dirs[dirs.length - 1] == null ? dirs[dirs.length - 2] : dirs[dirs.length - 1];
         fsIElement reference;
 
         for (int i = 1; i < dirs.length - 1; ++i) {
@@ -234,7 +232,7 @@ public class fsSimManager {
         // Obtenemos la referencia al directorio donde va el link
         current_dir = filesystem_root;
         dirs = new_path.split("/");
-        String n_name = dirs[dirs.length - 1] == null ? dirs[dirs.length - 1] : dirs[dirs.length - 2];
+        String n_name = dirs[dirs.length - 1] == null ? dirs[dirs.length - 2] : dirs[dirs.length - 1];
 
         for (int i = 1; i < dirs.length - 1; ++i) {
             String jumpto = dirs[i];
