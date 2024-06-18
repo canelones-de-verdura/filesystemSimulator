@@ -96,7 +96,7 @@ public class fsFile implements fsIElement {
             if (overwrite || (data == null)) {
                 data = new_data;
             } else {
-                data.concat(new_data);
+                data = data.concat(new_data);
             }
             last_modified_d = new Date();
             size = data.length();

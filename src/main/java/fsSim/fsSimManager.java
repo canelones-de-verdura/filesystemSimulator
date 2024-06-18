@@ -261,7 +261,7 @@ public class fsSimManager {
     /* Auxiliares */
     private void updatePasswdFile(fsUser user, boolean add) {
         // user:passwd:uid:guid:comentarios:home:shell
-        String line = String.format("%s:%s:%s:%s:%s:%s\n",
+        String line = String.format("\n%s:%s:%s:%s:%s:%s\n",
                 user.getName(), user.getPassword(), user.getUID(),
                 user.getGUID(), user.getHome(), user.getShell());
 
@@ -278,7 +278,7 @@ public class fsSimManager {
 
     private void updateGroupFile(fsGroup group) {
         // group:guid
-        String line = String.format("%s:%s\n", group.getName(), group.getGUID());
+        String line = String.format("\n%s:%s\n", group.getName(), group.getGUID());
 
         fsFile passwd = (fsFile) getElementInFs("/etc/group");
         passwd.open();
