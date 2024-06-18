@@ -36,6 +36,7 @@ public class fsUser {
         this.shell = shell;
 
         this.loggedThread = null;
+        this.semi = new Semaphore(1);
 
         // Seteamos las fechas
         this.creation_d = new Date();
