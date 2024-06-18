@@ -22,7 +22,7 @@ public class fsUser {
     private Date last_logged_d;
 
     // Semáforo para evitar accesos concurrentes
-    private Semaphore semi;
+    //private Semaphore semi;
     private Thread loggedThread;
 
     private int failed_login_attempts;
@@ -36,7 +36,7 @@ public class fsUser {
         this.shell = shell;
 
         this.loggedThread = null;
-        this.semi = new Semaphore(1);
+        //this.semi = new Semaphore(1);
 
         // Seteamos las fechas
         this.creation_d = new Date();
@@ -54,25 +54,25 @@ public class fsUser {
             return false;
         }
 
-        if (semi.availablePermits() == 0)
-            return false;
+        //if (semi.availablePermits() == 0)
+        //    return false;
 
-        try {
-            semi.acquire();
+        //try {
+            //semi.acquire();
             loggedThread = Thread.currentThread();
             this.last_logged_d = new Date();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-            System.out.println("🥱");
-            return false;
-        }
+        //} catch (InterruptedException e) {
+        //    e.printStackTrace();
+        //    System.out.println("🥱");
+        //    return false;
+        //}
 
         return true;
     }
 
     public void LogOut() {
         loggedThread = null;
-        semi.release();
+        //semi.release();
     }
 
     /* Getters */

@@ -8,7 +8,7 @@ public class fsFile implements fsIElement {
     private String ownerID;
     private String groupID; // TODO manejar permisos
     private String permissions;
-    private int size; // TODO manejar el tema del size
+    private int size;
 
     // Metadata
     private Date created_d;
