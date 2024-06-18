@@ -25,6 +25,8 @@ public class fsFile implements fsIElement {
         this.name = name;
         this.ownerID = uid;
         this.groupID = guid;
+        this.size = 0;
+
         this.last_access_d = this.last_modified_d = this.created_d = new Date();
         this.semi = new Semaphore(1);
         this.data = null;
@@ -97,6 +99,7 @@ public class fsFile implements fsIElement {
                 data.concat(new_data);
             }
             last_modified_d = new Date();
+            size = data.length();
             return true;
         } catch (Exception e) {
             e.printStackTrace();

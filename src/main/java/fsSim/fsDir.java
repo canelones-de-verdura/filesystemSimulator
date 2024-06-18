@@ -23,6 +23,8 @@ public class fsDir implements fsIElement {
         this.name = name;
         this.ownerID = uid;
         this.groupID = guid;
+        this.size = 4096;
+
         this.contents = new HashMap<>();
         this.contents.put("..", parent);
         this.contents.put(".", this);
