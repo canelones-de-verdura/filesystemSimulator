@@ -2,6 +2,7 @@ package fsSim;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Stack;
 
 // TODO: Cambiar bools por ints para los valores de retorno?
 public class fsSimManager {
@@ -12,11 +13,18 @@ public class fsSimManager {
     private Map<String, fsUser> users_by_uid;
     private Map<String, fsGroup> groups_by_guid;
 
+    private fsUser current_user;
+    private Stack<fsUser> previous_logged_users;
+
     public fsSimManager() {
         // Creamos el root
         String r_home = "/groot";
         this.root_group = new fsGroup("groot");
         this.groot = new fsUser("groot", "1234", this.root_group.getGUID(), null, r_home, "/bin/bigpotato");
+
+        // Cosas de la sesión
+        this.current_user = null;
+        this.previous_logged_users = null;
 
         this.users_by_uid = new HashMap<>();
         this.groups_by_guid = new HashMap<>();
@@ -32,7 +40,38 @@ public class fsSimManager {
         generateFileStructure();
     }
 
+    public boolean Login(String uid, String password) {
+        fsUser user = users_by_uid.get(uid);
+        if (user != null && user.LogIn(password))
+            current_user = user;
+        else return false;
+
+        return true;
+    }
+
+    public void Logout() {
+        if (current_user != null)
+            current_user.LogOut();
+
+        if (previous_logged_users != null)
+            current_user = previous_logged_users.pop();
+        else current_user = null;
+    }
+
+    public boolean SwitchUser(String uid, String password) {
+        if (previous_logged_users == null)
+            previous_logged_users = new Stack<>();
+
+        previous_logged_users.push(current_user);
+        if (!Login(uid, password)) {
+            previous_logged_users.pop();
+            return false;
+        }
+        return true;
+    }
+
     public fsIElement getElementInFs(String path) {
+        // No rompemos si no hay user porque precisamos el método para la configuración inicial.
         String[] dirs = path.split("/");
         fsDir current_dir = filesystem_root;
 
@@ -52,6 +91,9 @@ public class fsSimManager {
     }
 
     public void addUser(String name) {
+        if (current_user == null)
+            throw new RuntimeException("Not logged in.");
+
         String new_home = String.format("/home/%s", name);
         fsGroup new_group = new fsGroup(name);
         fsUser new_user = new fsUser(name, "", new_group.getGUID(), null, new_home, "/bin/bigpotato");
@@ -63,34 +105,55 @@ public class fsSimManager {
     }
 
     public fsUser getUser(String uid) {
+        if (current_user == null)
+            throw new RuntimeException("Not logged in.");
+
         return users_by_uid.get(uid);
     }
 
     public void removeUser(String uid) {
+        if (current_user == null)
+            throw new RuntimeException("Not logged in.");
+
         // TODO: Ver que hacemos con los grupos
         updatePasswdFile(users_by_uid.get(uid), false);
         users_by_uid.remove(uid);
     }
 
     public void addGroup(String name) {
+        if (current_user == null)
+            throw new RuntimeException("Not logged in.");
+
         fsGroup new_group = new fsGroup(name);
         groups_by_guid.put(new_group.getGUID(), new_group);
         updateGroupFile(new_group);
     }
 
     public fsGroup getGroup(String guid) {
+        if (current_user == null)
+            throw new RuntimeException("Not logged in.");
+
         return groups_by_guid.get(guid);
     }
 
     public Map<String, fsUser> getAllTheUsers() {
+        if (current_user == null)
+            throw new RuntimeException("Not logged in.");
+
         return users_by_uid;
     }
 
     public Map<String, fsGroup> getAllTheGroups() {
+        if (current_user == null)
+            throw new RuntimeException("Not logged in.");
+
         return groups_by_guid;
     }
 
     public boolean createFile(String path, fsUser creator) {
+        if (current_user == null)
+            throw new RuntimeException("Not logged in.");
+
         // Obtenemos la referencia de la carpeta padre
         String[] dirs = path.split("/");
         fsDir current_dir = filesystem_root;
@@ -117,6 +180,9 @@ public class fsSimManager {
     }
 
     public boolean createDir(String path, fsUser creator) {
+        if (current_user == null)
+            throw new RuntimeException("Not logged in.");
+
         // Obtenemos la referencia de la carpeta padre
         String[] dirs = path.split("/");
         fsDir current_dir = filesystem_root;
@@ -143,6 +209,9 @@ public class fsSimManager {
     }
 
     public boolean createLink(String reference_path, String new_path, fsUser creator) {
+        if (current_user == null)
+            throw new RuntimeException("Not logged in.");
+
         // Obtenemos la referencia al elemento original
         String[] dirs = reference_path.split("/");
         fsDir current_dir = filesystem_root;
