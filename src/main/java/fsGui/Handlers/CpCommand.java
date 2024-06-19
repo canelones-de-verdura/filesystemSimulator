@@ -1,4 +1,3 @@
-//TODO: AYUDAME POR FAVOR / hay que arreglar las flags
 package fsGui.Handlers;
 
 import java.util.ArrayList;
@@ -11,7 +10,7 @@ public class CpCommand extends BaseCommand {
     public CpCommand(CommandFactory commandFactory) {
         super(commandFactory);
         super.keywords = new String[] { "cp" };
-        super.arguments = new String[] { "rename" };
+        super.arguments = new String[] { "r" };
     }
 
     @Override
@@ -19,6 +18,7 @@ public class CpCommand extends BaseCommand {
             BigPotatoShell shell) {
         String[] cpArgs = message.split(" ");
         boolean rename = false;
+        String nombre_origen = null;
 
         // Verificamos que las dos rutas son correctas
         if (cpArgs.length != 2) {
@@ -27,12 +27,12 @@ public class CpCommand extends BaseCommand {
         }
 
         // Verificamos argumentos
-        if (arguments.size() > 2 || (arguments.size() == 1 && !arguments.contains("rename"))) {
+        if (arguments.size() > 2 || (arguments.size() == 1 && !arguments.contains("r"))) {
             response.append("Argumentos inválidos.\n");
             return;
         }
 
-        if (arguments.size() == 1 && arguments.get(0).equals("rename"))
+        if (arguments.size() == 1 && arguments.get(0).equals("r"))
             rename = true;
 
         // Armamos rutas
@@ -48,14 +48,11 @@ public class CpCommand extends BaseCommand {
             return;
         }
 
+        nombre_origen = origen.getName();
         if (rename) {
             if (destino == null) {
-                // String[] aux = mvArgs[1].split("/");
-                // String nombre_destino = aux[aux.length] == null ? aux[aux.length - 1] :
-                // aux[aux.length];
-
                 // No hay un elemento con ese nombre en el destino, por lo que podemos usarlo.
-                String nombre_destino = cpArgs[1].substring(cpArgs[1].lastIndexOf("/"), cpArgs[1].length());
+                String nombre_destino = absoluteDestino.substring(absoluteDestino.lastIndexOf("/") + 1);
                 origen.setName(nombre_destino);
 
                 // Recuperamos la referencia al verdero destino
@@ -86,6 +83,11 @@ public class CpCommand extends BaseCommand {
         if (origen instanceof fsDir)
             ((fsDir) origen).changeParent(destino);
 
+        // Borramos original
+        // Recuperamos la referencia al verdero destino
+        fsDir padre_origen = (fsDir) shell.fsManager
+                .getElementInFs(absoluteOrigen.substring(0, absoluteOrigen.lastIndexOf("/")));
+        padre_origen.remove(nombre_origen);
     }
 
     @Override

@@ -25,6 +25,7 @@ public class CommandFactory {
         register(new PasswdCommand(this));
         register(new CleanCommand(this));
         register(new MvCommand(this));
+        register(new CpCommand(this));
     }
 
     public void register(BaseCommand command) {
