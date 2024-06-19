@@ -15,7 +15,8 @@ public class LoginCommand extends BaseCommand {
     }
 
     @Override
-    protected void internalHandle(String message, ArrayList<String> arguments, StringBuilder response, BigPotatoShell shell) {
+    protected void internalHandle(String message, ArrayList<String> arguments, StringBuilder response,
+            BigPotatoShell shell) {
         String[] loginArgs = message.split(" ");
         if (loginArgs.length != 2) {
             response.append("Esperados dos argumentos: [usuario] [contraseña].\n");
@@ -30,10 +31,17 @@ public class LoginCommand extends BaseCommand {
             if (users.get(key).getName().equals(username)) {
                 fsUser user = users.get(key);
                 if (shell.fsManager.Login(user.getUID(), password)) {
-                    if(!shell.addUserToStack(user)) response.append("No se pudo iniciar sesión.");
+                    if (!shell.addUserToStack(user))
+                        response.append("No se pudo iniciar sesión.");
+                    else
+                        response.append("Último inicio de sesión " + user.getLoginDate() + ".");
                     return;
                 } else {
                     response.append("Usuario o contraseña incorrectos.");
+                    int fails = user.getFailedLoginAttempts();
+                    response.append("\nIntentos fallidos: " + fails + ".");
+                    if (fails > 5)
+                        response.append(" Yo me tomaría un rato antes de intentar de nuevo.");
                     return;
                 }
             }

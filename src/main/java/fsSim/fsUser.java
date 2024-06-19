@@ -99,6 +99,10 @@ public class fsUser {
         return last_logged_d;
     }
 
+    public int getFailedLoginAttempts() {
+        return failed_login_attempts;
+    }
+
     /* Setters */
     public boolean setPassword(String password, String new_password) {
         if (!this.password.equals(Hashing.sha256().hashString(password, StandardCharsets.UTF_8).toString())) {
