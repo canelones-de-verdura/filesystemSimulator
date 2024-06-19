@@ -32,6 +32,10 @@ public class fsDir implements fsIElement {
         this.last_access_d = this.last_modified_d = this.created_d = new Date();
     }
 
+    public void setName(String new_name) {
+        this.name = new_name;
+    }
+
     /* Getters */
     public String getName() {
         return name;

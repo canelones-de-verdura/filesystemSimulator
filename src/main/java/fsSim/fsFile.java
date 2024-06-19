@@ -33,6 +33,10 @@ public class fsFile implements fsIElement {
         this.workingThread = null;
     }
 
+    public void setName(String new_name) {
+        this.name = new_name;
+    }
+
     /* Getters */
     public String getName() {
         return name;

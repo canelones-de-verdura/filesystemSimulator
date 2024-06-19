@@ -3,6 +3,8 @@ package fsSim;
 import java.util.Date;
 
 public interface fsIElement {
+    public void setName(String new_name);
+
     public String getName();
 
     public String getOwnerID();

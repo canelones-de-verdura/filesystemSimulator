@@ -46,7 +46,7 @@ public class fsUser {
             return false;
         }
 
-        if (semi.availablePermits() == 0 || !Thread.currentThread().equals(loggedThread))
+        if (semi.availablePermits() == 0 || (loggedThread != null && !Thread.currentThread().equals(loggedThread)))
             return false;
 
         try {
