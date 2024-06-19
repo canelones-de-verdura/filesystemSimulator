@@ -1,3 +1,5 @@
+//TODO: AYUDAME POR FAVOR
+//poner flag para facilitar la lógica
 package fsGui.Handlers;
 
 import java.util.ArrayList;

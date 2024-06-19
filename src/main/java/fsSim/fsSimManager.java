@@ -3,7 +3,6 @@ package fsSim;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Stack;
 
 // TODO? Cambiar bools por ints para los valores de retorno?
 public class fsSimManager {
