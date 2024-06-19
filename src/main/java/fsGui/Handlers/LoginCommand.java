@@ -1,4 +1,3 @@
-// TODO: mostrar última fecha de login e intentos fallidos
 package fsGui.Handlers;
 
 import fsGui.BigPotatoShell;

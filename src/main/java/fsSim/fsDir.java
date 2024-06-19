@@ -18,7 +18,6 @@ public class fsDir implements fsIElement {
 
     private Map<String, fsIElement> contents;
 
-    // TODO? Sacar parent de los parámetros
     public fsDir(String name, fsDir parent, String uid, String guid) {
         this.name = name;
         this.ownerID = uid;

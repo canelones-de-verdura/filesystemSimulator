@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-// TODO? Cambiar bools por ints para los valores de retorno?
 public class fsSimManager {
     private static fsSimManager instance = null;
 
@@ -144,7 +143,6 @@ public class fsSimManager {
         if (!groot.getUID().equals(caller_uid))
             throw new RuntimeException();
 
-        // TODO: Ver que hacemos con los grupos
         updatePasswdFile(users_by_uid.get(uid), -1);
         users_by_uid.remove(uid);
     }

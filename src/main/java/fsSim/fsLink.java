@@ -8,7 +8,7 @@ public class fsLink implements fsIElement {
     private String name;
     private String ownerID;
     private String groupID;
-    private int size; // TODO manejar el tema del size
+    private int size;
 
     // Metadata
     private Date created_d;

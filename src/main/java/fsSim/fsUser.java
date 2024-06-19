@@ -7,7 +7,6 @@ import java.util.concurrent.Semaphore;
 
 import com.google.common.hash.Hashing;
 
-// TODO? Sacar los semáforos
 public class fsUser {
     private String name;
     private String uid;

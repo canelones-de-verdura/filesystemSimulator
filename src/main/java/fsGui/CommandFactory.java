@@ -33,7 +33,6 @@ public class CommandFactory {
         commandMap.put(String.join("-", command.getKeywords()), command);
     }
 
-    // TODO no se si la lógica de esto debería de ir en el factory o en el shell
     public BaseCommand getCommand(String commandName) {
         for (String key : commandMap.keySet()) {
             for (String keyword : key.split("-")) {
