@@ -5,7 +5,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Stack;
 
-// TODO: Cambiar bools por ints para los valores de retorno?
+// TODO? Cambiar bools por ints para los valores de retorno?
 public class fsSimManager {
     private static fsSimManager instance = null;
 
@@ -102,8 +102,8 @@ public class fsSimManager {
         return current_dir.getElement(dirs[dirs.length - 1]);
     }
 
-    public void addUser(String name) {
-        if (logged_users == null)
+    public void addUser(String name, String caller_uid) {
+        if (!groot.getUID().equals(caller_uid))
             throw new RuntimeException("Not logged in.");
 
         String new_home = String.format("/home/%s", name);
@@ -117,7 +117,7 @@ public class fsSimManager {
 
         // Creamos el home
         fsDir aux = (fsDir) getElementInFs("/home");
-        fsDir user_home = new fsDir(new_home, aux, new_user.getUID(), new_user.getGUID());
+        fsDir user_home = new fsDir(new_user.getName(), aux, new_user.getUID(), new_user.getGUID());
         aux.move(user_home);
     }
 
@@ -128,8 +128,8 @@ public class fsSimManager {
         return users_by_uid.get(uid);
     }
 
-    public void removeUser(String uid) {
-        if (logged_users == null)
+    public void removeUser(String uid, String caller_uid) {
+        if (!groot.getUID().equals(caller_uid))
             throw new RuntimeException("Not logged in.");
 
         // TODO: Ver que hacemos con los grupos
@@ -137,8 +137,8 @@ public class fsSimManager {
         users_by_uid.remove(uid);
     }
 
-    public void addGroup(String name) {
-        if (logged_users == null)
+    public void addGroup(String name, String caller_uid) {
+        if (!groot.getUID().equals(caller_uid))
             throw new RuntimeException("Not logged in.");
 
         fsGroup new_group = new fsGroup(name);
@@ -166,7 +166,7 @@ public class fsSimManager {
     }
 
     public boolean createFile(String path, fsUser creator) {
-        if (logged_users == null)
+        if (!logged_users.contains(creator))
             throw new RuntimeException("Not logged in.");
 
         // Obtenemos la referencia de la carpeta padre
@@ -195,7 +195,7 @@ public class fsSimManager {
     }
 
     public boolean createDir(String path, fsUser creator) {
-        if (logged_users == null)
+        if (!logged_users.contains(creator))
             throw new RuntimeException("Not logged in.");
 
         // Obtenemos la referencia de la carpeta padre
@@ -224,7 +224,7 @@ public class fsSimManager {
     }
 
     public boolean createLink(String reference_path, String new_path, fsUser creator) {
-        if (logged_users == null)
+        if (!logged_users.contains(creator))
             throw new RuntimeException("Not logged in.");
 
         // Obtenemos la referencia al elemento original
