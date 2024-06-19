@@ -26,16 +26,17 @@ public class CommandFactory {
         register(new CleanCommand(this));
         register(new MvCommand(this));
         register(new CpCommand(this));
+        register(new UserDelCommand(this));
     }
 
     public void register(BaseCommand command) {
-        commandMap.put(String.join("-",command.getKeywords()), command);
+        commandMap.put(String.join("-", command.getKeywords()), command);
     }
 
-    //TODO no se si la lógica de esto debería de ir en el factory o en el shell
+    // TODO no se si la lógica de esto debería de ir en el factory o en el shell
     public BaseCommand getCommand(String commandName) {
         for (String key : commandMap.keySet()) {
-            for(String keyword : key.split("-")) {
+            for (String keyword : key.split("-")) {
                 if (keyword.toLowerCase().equals(commandName.toLowerCase())) {
                     return commandMap.get(key);
                 }
@@ -44,8 +45,9 @@ public class CommandFactory {
         return null;
     }
 
-    public void handleCommand(String commandName, ArrayList<String> arguments, String message, StringBuilder response, BigPotatoShell shell) {
-        if(shell.user == null && !commandName.equals("login")) {
+    public void handleCommand(String commandName, ArrayList<String> arguments, String message, StringBuilder response,
+            BigPotatoShell shell) {
+        if (shell.user == null && !commandName.equals("login")) {
             response.append("No se ha iniciado sesión.");
             return;
         }

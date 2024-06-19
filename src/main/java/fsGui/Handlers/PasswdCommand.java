@@ -43,6 +43,7 @@ public class PasswdCommand extends BaseCommand {
             if (users.get(key).getName().equals(username)) {
                 fsUser user = users.get(key);
                 if(user.setPassword(oldPassword, newPassword)){
+                    shell.fsManager.updatePasswdFile(user, 1);
                     response.append("Contraseña cambiada exitosamente.");
                     return;
                 }else{

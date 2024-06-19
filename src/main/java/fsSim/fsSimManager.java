@@ -46,17 +46,26 @@ public class fsSimManager {
         // Arreglamos la referencia a ".."
         this.filesystem_root.changeParent(filesystem_root);
         generateFileStructure();
+        fsUser eze = addUser("eze", groot.getUID());
+        fsUser facu = addUser("facu", groot.getUID());
+
+        eze.setPassword("", "2210");
+        updatePasswdFile(eze, 1);
+        facu.setPassword("", "2509");
+        updatePasswdFile(facu, 1);
+
     }
 
     public boolean Login(String uid, String password) {
         fsUser user = users_by_uid.get(uid);
 
         if (logged_users == null)
-            logged_users = new ArrayList<>();   
+            logged_users = new ArrayList<>();
 
         if (user != null && user.LogIn(password))
             logged_users.add(user);
-        else return false;
+        else
+            return false;
 
         return true;
     }
@@ -66,7 +75,7 @@ public class fsSimManager {
             return false;
 
         fsUser user = null;
-        for (fsUser usr :  logged_users)
+        for (fsUser usr : logged_users)
             if (usr.getUID().equals(uid)) {
                 usr.LogOut();
                 user = usr;
@@ -82,7 +91,8 @@ public class fsSimManager {
     }
 
     public fsIElement getElementInFs(String path) {
-        // No rompemos si no hay user porque precisamos el método para la configuración inicial.
+        // No rompemos si no hay user porque precisamos el método para la configuración
+        // inicial.
         String[] dirs = path.split("/");
         fsDir current_dir = filesystem_root;
 
@@ -101,9 +111,9 @@ public class fsSimManager {
         return current_dir.getElement(dirs[dirs.length - 1]);
     }
 
-    public void addUser(String name, String caller_uid) {
+    public fsUser addUser(String name, String caller_uid) {
         if (!groot.getUID().equals(caller_uid))
-            throw new RuntimeException("Not logged in.");
+            throw new RuntimeException();
 
         String new_home = String.format("/home/%s", name);
         fsGroup new_group = new fsGroup(name);
@@ -112,33 +122,36 @@ public class fsSimManager {
         users_by_uid.put(new_user.getUID(), new_user);
         groups_by_guid.put(new_group.getGUID(), new_group);
 
-        updatePasswdFile(new_user, true);
+        updatePasswdFile(new_user, 0);
+        updateGroupFile(new_group);
 
         // Creamos el home
         fsDir aux = (fsDir) getElementInFs("/home");
         fsDir user_home = new fsDir(new_user.getName(), aux, new_user.getUID(), new_user.getGUID());
         aux.move(user_home);
+
+        return new_user;
     }
 
     public fsUser getUser(String uid) {
         if (logged_users == null)
-            throw new RuntimeException("Not logged in.");
+            throw new RuntimeException();
 
         return users_by_uid.get(uid);
     }
 
     public void removeUser(String uid, String caller_uid) {
         if (!groot.getUID().equals(caller_uid))
-            throw new RuntimeException("Not logged in.");
+            throw new RuntimeException();
 
         // TODO: Ver que hacemos con los grupos
-        updatePasswdFile(users_by_uid.get(uid), false);
+        updatePasswdFile(users_by_uid.get(uid), -1);
         users_by_uid.remove(uid);
     }
 
     public void addGroup(String name, String caller_uid) {
         if (!groot.getUID().equals(caller_uid))
-            throw new RuntimeException("Not logged in.");
+            throw new RuntimeException();
 
         fsGroup new_group = new fsGroup(name);
         groups_by_guid.put(new_group.getGUID(), new_group);
@@ -147,26 +160,27 @@ public class fsSimManager {
 
     public fsGroup getGroup(String guid) {
         if (logged_users == null)
-            throw new RuntimeException("Not logged in.");
+            throw new RuntimeException();
 
         return groups_by_guid.get(guid);
     }
 
     public Map<String, fsUser> getAllTheUsers() {
-        // Al igual que getElementInFs(...) no podemos romper todo si el usuario no está logueado
+        // Al igual que getElementInFs(...) no podemos romper todo si el usuario no está
+        // logueado
         return users_by_uid;
     }
 
     public Map<String, fsGroup> getAllTheGroups() {
         if (logged_users == null)
-            throw new RuntimeException("Not logged in.");
+            throw new RuntimeException();
 
         return groups_by_guid;
     }
 
     public boolean createFile(String path, fsUser creator) {
         if (!logged_users.contains(creator))
-            throw new RuntimeException("Not logged in.");
+            throw new RuntimeException();
 
         // Obtenemos la referencia de la carpeta padre
         String[] dirs = path.split("/");
@@ -195,7 +209,7 @@ public class fsSimManager {
 
     public boolean createDir(String path, fsUser creator) {
         if (!logged_users.contains(creator))
-            throw new RuntimeException("Not logged in.");
+            throw new RuntimeException();
 
         // Obtenemos la referencia de la carpeta padre
         String[] dirs = path.split("/");
@@ -224,7 +238,7 @@ public class fsSimManager {
 
     public boolean createLink(String reference_path, String new_path, fsUser creator) {
         if (!logged_users.contains(creator))
-            throw new RuntimeException("Not logged in.");
+            throw new RuntimeException();
 
         // Obtenemos la referencia al elemento original
         String[] dirs = reference_path.split("/");
@@ -259,7 +273,8 @@ public class fsSimManager {
             }
         }
 
-        // Si la ruta de destino no incluye el nombre nuevo, entonces usa el mismo que el archivo original
+        // Si la ruta de destino no incluye el nombre nuevo, entonces usa el mismo que
+        // el archivo original
         if (!current_dir.getName().equals(n_name)) {
             // Chequeamos que el nombre del nuevo elemento ya no esté en uso
             if (current_dir.getElement(n_name) != null)
@@ -275,20 +290,42 @@ public class fsSimManager {
     }
 
     /* Auxiliares */
-    private void updatePasswdFile(fsUser user, boolean add) {
-        // user:passwd:uid:guid:comentarios:home:shell
-        String line = String.format("%s:%s:%s:%s:%s:%s\n",
+    // -1 borra el user
+    // 0 lo agrega
+    // 1 lo reescribe
+    public void updatePasswdFile(fsUser user, int opt) {
+        // user:passwd:uid:guid:home:shell
+        String line = String.format("%s:%s:%s:%s:%s:%s",
                 user.getName(), user.getPassword(), user.getUID(),
                 user.getGUID(), user.getHome(), user.getShell());
 
         fsFile passwd = (fsFile) getElementInFs("/etc/passwd");
         passwd.open();
-        if (add) {
+        if (opt == 0) {
+            if (passwd.read() != null)
+                line = "\n" + line;
+
             passwd.write(line, false);
-        } else {
-            String texto_editado = passwd.read().replace(line, "");
+        }
+
+        if (opt == -1) {
+            String texto_editado = passwd.read().replace("\n" + line, "");
             passwd.write(texto_editado, true);
         }
+
+        if (opt == 1) {
+            String file = passwd.read();
+            String[] lineas_en_archivo = file.split("\n");
+            int index = 0;
+            for (; index < lineas_en_archivo.length; ++index)
+                if (lineas_en_archivo[index].contains(user.getName()))
+                    break;
+
+            lineas_en_archivo[index] = line;
+            String texto_editado = String.join("\n", lineas_en_archivo);
+            passwd.write(texto_editado, true);
+        }
+
         passwd.close();
     }
 
@@ -312,7 +349,7 @@ public class fsSimManager {
         // Agregamos el /etc/passwd
         fsFile file = new fsFile("passwd", groot.getUID(), root_group.getGUID());
         etc.move(file);
-        updatePasswdFile(groot, true);
+        updatePasswdFile(groot, 0);
 
         // Agregamos el /etc/group
         file = new fsFile("group", groot.getUID(), root_group.getGUID());
