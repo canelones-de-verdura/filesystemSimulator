@@ -3,6 +3,8 @@ package fsGui;
 import javax.swing.*;
 import javax.swing.text.BadLocationException;
 
+import fsSim.fsFile;
+
 import java.awt.*;
 import java.awt.event.*;
 import java.io.FileReader;
@@ -11,15 +13,15 @@ import java.io.IOException;
 public class SimpleNano {
     JFrame frame;
     JTextArea textArea;
-    String filename;
+    fsFile file;
 
-    public SimpleNano(String filename) {
-        this.filename = filename;
+    public SimpleNano(fsFile file) {
+        this.file = file;
 
         // Configuración de la ventana
-        frame = new JFrame("ENano Editor - " + filename);
+        frame = new JFrame("ENano Editor - " + file.getName());
         textArea = new JTextArea();
-        textArea.setFont(new Font("Monospaced", Font.PLAIN, 12));
+        textArea.setFont(new Font("Monospaced", Font.PLAIN, 14));
         JScrollPane scrollPane = new JScrollPane(textArea);
 
         // Menú simulado en la parte inferior
@@ -32,9 +34,12 @@ public class SimpleNano {
         frame.add(bottomPanel, BorderLayout.SOUTH);
 
         // Configurar comportamiento de cierre
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         frame.setSize(800, 600);
         frame.setVisible(true);
+
+        // Setea el contenido del archivo
+        textArea.setText(file.read());
 
         // Configuración de los key bindings para simular nano
         textArea.addKeyListener(new KeyAdapter() {
@@ -43,14 +48,6 @@ public class SimpleNano {
                 if (e.isControlDown()) {
                     switch (e.getKeyCode()) {
                         case KeyEvent.VK_S:
-                            // Si el archivo no tiene nombre, pedirlo
-                            if (filename.equals("Sin nombre")) {
-                                String name = JOptionPane.showInputDialog(frame, "Nombre del archivo:");
-                                if (name != null) {
-                                    SimpleNano.this.filename = name;
-                                    frame.setTitle("ENano Editor - " + name);
-                                }
-                            }
                             saveFile();
                             break;
                         case KeyEvent.VK_R:
@@ -78,7 +75,13 @@ public class SimpleNano {
     }
 
     private void saveFile() {
-        // TODO Implementar la lógica para guardar el archivo en el sistema de archivos
+        file.open();
+        if (file.write(textArea.getText(), true)) {
+            JOptionPane.showMessageDialog(frame, "Archivo guardado correctamente.", "Guardado", JOptionPane.INFORMATION_MESSAGE);
+        } else {
+            JOptionPane.showMessageDialog(frame, "No se pudo guardar el archivo.", "Error", JOptionPane.ERROR_MESSAGE);
+        }
+        file.close();
         frame.dispose();
     }
 

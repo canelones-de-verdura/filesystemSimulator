@@ -9,91 +9,176 @@ import java.util.ArrayList;
 public class SimpleTerminal {
     JFrame f;
     JTextPane terminal;
-    JTextField inputField;
     BigPotatoShell shell;
-    ArrayList<String> commandHistory; // Historial de comandos ingresados.
-    int historyIndex; // Índice del comando actual en el historial.
+    int historyIndex;
+    Style promptStyle;
     Style userCommandStyle;
     Style shellResponseStyle;
+    int promptPosition;
 
     SimpleTerminal() {
         f = new JFrame();
         terminal = new JTextPane();
-        terminal.setEditable(false);
+        terminal.setFont(new Font("Monospaced", Font.PLAIN, 13));
+        terminal.setCaretColor(Color.BLACK);
         f.setTitle("BigPotato Terminal");
         JScrollPane scrollPane = new JScrollPane(terminal);
         scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
         scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-        inputField = new JTextField();
         shell = new BigPotatoShell();
 
-        // Estilo para los comandos del usuario.
         StyledDocument doc = terminal.getStyledDocument();
+        promptStyle = doc.addStyle("PromptStyle", null);
+        StyleConstants.setForeground(promptStyle, Color.BLUE);
         userCommandStyle = doc.addStyle("UserCommandStyle", null);
         StyleConstants.setForeground(userCommandStyle, Color.BLACK);
-
-        // Estilo para las respuestas del shell.
-        Style shellResponseStyle = doc.addStyle("ShellResponseStyle", null);
+        shellResponseStyle = doc.addStyle("ShellResponseStyle", null);
         StyleConstants.setForeground(shellResponseStyle, Color.GRAY);
 
-        // Ejecuta el comando ingresado en el terminal.
-        inputField.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                String command = inputField.getText();
-                appendToTerminal(formatUserInput(command), userCommandStyle);
-                appendToTerminal(shell.proccessCommand(command), shellResponseStyle);
-                terminal.setCaretPosition(terminal.getDocument().getLength());
-                commandHistory.add(command);
-                historyIndex = commandHistory.size();
-                inputField.setText("");
-            }
-        });
+        ((AbstractDocument) doc).setDocumentFilter(new TerminalDocumentFilter());
 
-        // Permite navegar por el historial de comandos con las flechas arriba y abajo.
-        inputField.addKeyListener(new KeyAdapter() {
+        terminal.addKeyListener(new KeyAdapter() {
+            @Override
             public void keyPressed(KeyEvent e) {
-                if (e.getKeyCode() == KeyEvent.VK_UP) {
+                int pos = terminal.getCaretPosition();
+                if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+                    try {
+                        String command = doc.getText(promptPosition, pos - promptPosition).trim();
+                        // solo tomo el comando después del caracter $
+                        command = command.substring(command.indexOf("$") + 1).trim();
+                        appendToTerminal("\n", userCommandStyle);
+                        String response;
+                        if(command.isEmpty()) {
+                            response = "";
+                        } else {
+                            response = shell.proccessCommand(command);
+                        }
+                        if(response.equals("dirtyterminal_pleasecleanme")) {
+                            try {
+                                StyledDocument doc = terminal.getStyledDocument();
+                                // Es la forma que encontré de bypassear el filtro del document
+                                // Pd: Sí, es mi fecha de cumpleaños en negativo :D
+                                doc.remove(-25092004, -25092004);
+                            } catch (BadLocationException ex) {
+                                ex.printStackTrace();
+                            }
+                            showPrompt();
+                            promptPosition = doc.getLength();
+                            terminal.setCaretPosition(doc.getLength());
+                            return;
+                        }
+                        appendToTerminal(response.isEmpty() ? "" : response + "\n", shellResponseStyle);
+                        terminal.setCaretPosition(doc.getLength());
+                        shell.commandHistory.add(command);
+                        historyIndex = shell.commandHistory.size();
+                        showPrompt();
+                        promptPosition = doc.getLength();
+                    } catch (BadLocationException ex) {
+                        ex.printStackTrace();
+                    }
+                    e.consume(); // Prevent newline being added to the document
+                } else if (e.getKeyCode() == KeyEvent.VK_UP) {
                     if (historyIndex > 0) {
                         historyIndex--;
-                        inputField.setText(commandHistory.get(historyIndex));
+                        replaceCurrentCommand(shell.commandHistory.get(historyIndex));
                     }
                 } else if (e.getKeyCode() == KeyEvent.VK_DOWN) {
-                    if (historyIndex < commandHistory.size() - 1) {
+                    if (historyIndex < shell.commandHistory.size() - 1) {
                         historyIndex++;
-                        inputField.setText(commandHistory.get(historyIndex));
+                        replaceCurrentCommand(shell.commandHistory.get(historyIndex));
                     } else {
-                        inputField.setText("");
-                        historyIndex = commandHistory.size();
+                        replaceCurrentCommand("");
+                        historyIndex = shell.commandHistory.size();
                     }
+                } else if (pos < promptPosition) {
+                    terminal.setCaretPosition(doc.getLength());
+                }
+            }
+
+            @Override
+            public void keyTyped(KeyEvent e) {
+                int pos = terminal.getCaretPosition();
+                if (pos < promptPosition) {
+                    terminal.setCaretPosition(doc.getLength());
                 }
             }
         });
 
-        appendToTerminal("####### Bienvenido al BigPotato Terminal #######", userCommandStyle);
         f.add(scrollPane, BorderLayout.CENTER);
-        f.add(inputField, BorderLayout.SOUTH);
         f.setSize(600, 450);
         f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         f.setVisible(true);
 
-        commandHistory = new ArrayList<>();
+        shell.commandHistory = new ArrayList<>();
         historyIndex = 0;
+
+        showPrompt();
+        terminal.setCaretPosition(doc.getLength());
     }
 
-    public String formatUserInput(String input) {
-        return shell.USER + "@" + shell.HOST + ":" + shell.PWD + "$ " + input;
-    }
-
-    public void appendToTerminal(String text, Style style) {
+    public void showPrompt() {
         try {
+            if(shell.user == null) {
+                // inserto la frase de bienvenida
+                StyledDocument doc = terminal.getStyledDocument();
+                String welcome = "Bienvenido a BigPotato!\nLogin $";
+                doc.insertString(doc.getLength(), welcome, promptStyle);
+                promptPosition = doc.getLength();
+                return;
+            }
             StyledDocument doc = terminal.getStyledDocument();
-            doc.insertString(doc.getLength(), text + "\n", style);
+            String prompt = shell.USER + "@" + shell.HOST + ":" + shell.PWD + " $ ";
+            promptPosition = doc.getLength();
+            doc.insertString(promptPosition, prompt, promptStyle);
+            terminal.setCaretPosition(doc.getLength());
         } catch (BadLocationException e) {
             e.printStackTrace();
         }
     }
 
-    public static void main(String[] args) {
-        new SimpleTerminal();
+    public void appendToTerminal(String text, Style style) {
+        try {
+            StyledDocument doc = terminal.getStyledDocument();
+            doc.insertString(doc.getLength(), text, style);
+        } catch (BadLocationException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void replaceCurrentCommand(String text) {
+        try {
+            StyledDocument doc = terminal.getStyledDocument();
+            doc.remove(promptPosition, doc.getLength() - promptPosition);
+            doc.insertString(promptPosition, text, userCommandStyle);
+            terminal.setCaretPosition(doc.getLength());
+        } catch (BadLocationException e) {
+            e.printStackTrace();
+        }
+    }
+
+    class TerminalDocumentFilter extends DocumentFilter {
+        @Override
+        public void remove(FilterBypass fb, int offset, int length) throws BadLocationException {
+            if( offset == -25092004 && length == -25092004 ) {
+                super.remove(fb, 0, fb.getDocument().getLength());
+            }
+            if (offset >= promptPosition) {
+                super.remove(fb, offset, length);
+            }
+        }
+
+        @Override
+        public void insertString(FilterBypass fb, int offset, String string, AttributeSet attr) throws BadLocationException {
+            if (offset >= promptPosition) {
+                super.insertString(fb, offset, string, attr);
+            }
+        }
+
+        @Override
+        public void replace(FilterBypass fb, int offset, int length, String text, AttributeSet attrs) throws BadLocationException {
+            if (offset >= promptPosition) {
+                super.replace(fb, offset, length, text, attrs);
+            }
+        }
     }
 }

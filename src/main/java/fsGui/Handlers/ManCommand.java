@@ -1,5 +1,6 @@
 package fsGui.Handlers;
 import fsGui.CommandFactory;
+import java.util.ArrayList;
 
 public class ManCommand extends BaseCommand {
     public ManCommand(CommandFactory commandFactory) {
@@ -8,17 +9,14 @@ public class ManCommand extends BaseCommand {
     }
 
     @Override
-    protected void internalHandle(String message, StringBuilder response, fsGui.BigPotatoShell shell) {
-        // Si el mensaje no tiene argumentos, se muestra el mensaje de ayuda general
+    protected void internalHandle(String message, ArrayList<String> arguments, StringBuilder response, fsGui.BigPotatoShell shell) {
         if (message.isEmpty()) {
-            // Recorre todos los comandos registrados y muestra su ayuda
             for (String commandName : commandFactory.commandMap.keySet()) {
                 response.append("Comando: " + commandName + "\n");
                 response.append(commandFactory.getCommand(commandName).showHelp());
                 response.append("\n");
             }
         } else {
-            // Muestra la ayuda del comando específico
             BaseCommand command = commandFactory.getCommand(message);
             if (command != null) {
                 response.append(command.showHelp());
@@ -26,7 +24,6 @@ public class ManCommand extends BaseCommand {
                 response.append("Comando \"" + message + "\" no encontrado");
             }
         }
-        return;
     }
     @Override
     public String showHelp() {

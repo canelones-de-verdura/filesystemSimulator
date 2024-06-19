@@ -1,5 +1,6 @@
 package fsGui.Handlers;
 import fsGui.CommandFactory;
+import java.util.ArrayList;
 
 public class EchoCommand extends BaseCommand {
     public EchoCommand(CommandFactory commandFactory) {
@@ -8,7 +9,7 @@ public class EchoCommand extends BaseCommand {
     }
 
     @Override
-    protected void internalHandle(String message, StringBuilder response, fsGui.BigPotatoShell shell) {
+    protected void internalHandle(String message, ArrayList<String> arguments, StringBuilder response, fsGui.BigPotatoShell shell) {
         response.append(message);
     }
 

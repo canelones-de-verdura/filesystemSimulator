@@ -1,4 +1,5 @@
 package fsGui.Handlers;
+import java.util.ArrayList;
 
 import fsGui.CommandFactory;
 
@@ -9,7 +10,7 @@ public class EasterEggsCommand extends BaseCommand {
     }
 
     @Override
-    protected void internalHandle(String message, StringBuilder response, fsGui.BigPotatoShell shell) {
+    protected void internalHandle(String message, ArrayList<String> arguments, StringBuilder response, fsGui.BigPotatoShell shell) {
         response.append("Easter egg encontrado: ");
         response.append(message);
         // Genera numeros mágicos
