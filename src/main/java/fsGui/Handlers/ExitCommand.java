@@ -1,17 +1,21 @@
 package fsGui.Handlers;
 
 import fsGui.CommandFactory;
+import fsSim.fsUser;
+
 import java.util.ArrayList;
 
 public class ExitCommand extends BaseCommand {
     public ExitCommand(CommandFactory commandFactory) {
         super(commandFactory);
-        super.keywords = new String [] { "exit" };
+        super.keywords = new String[] { "exit" };
     }
 
     @Override
-    protected void internalHandle(String message, ArrayList<String> arguments, StringBuilder response, fsGui.BigPotatoShell shell) {
-        shell.popUserFromStack();
+    protected void internalHandle(String message, ArrayList<String> arguments, StringBuilder response,
+            fsGui.BigPotatoShell shell) {
+        fsUser user = shell.popUserFromStack();
+        shell.fsManager.Logout(user.getUID());
     }
 
     @Override

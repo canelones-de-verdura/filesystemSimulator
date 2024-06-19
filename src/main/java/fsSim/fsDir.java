@@ -8,8 +8,7 @@ import java.util.Set;
 public class fsDir implements fsIElement {
     private String name;
     private String ownerID;
-    private String groupID; // TODO manejar permisos
-    //private int permissions;
+    private String groupID;
     private int size;
 
     // Metadata
@@ -24,7 +23,6 @@ public class fsDir implements fsIElement {
         this.name = name;
         this.ownerID = uid;
         this.groupID = guid;
-        //this.permissions = 622;
         this.size = 4096;
         this.contents = new HashMap<>();
         this.contents.put("..", parent);
@@ -48,12 +46,6 @@ public class fsDir implements fsIElement {
     public String getGUID() {
         return groupID;
     }
-
-    /*
-    public int getPermissions() {
-        return permissions;
-    }
-     */
 
     public int getSize() {
         return size;

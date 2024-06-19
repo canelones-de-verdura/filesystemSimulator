@@ -6,8 +6,7 @@ import java.util.concurrent.Semaphore;
 public class fsFile implements fsIElement {
     private String name;
     private String ownerID;
-    private String groupID; // TODO manejar permisos
-    //private int permissions;
+    private String groupID;
     private int size;
 
     // Metadata
@@ -25,7 +24,6 @@ public class fsFile implements fsIElement {
         this.name = name;
         this.ownerID = uid;
         this.groupID = guid;
-        //this.permissions = 622;
         this.size = 0;
         this.last_access_d = this.last_modified_d = this.created_d = new Date();
         this.semi = new Semaphore(1);
@@ -49,12 +47,6 @@ public class fsFile implements fsIElement {
     public String getGUID() {
         return groupID;
     }
-
-    /*
-    public int getPermissions() {
-        return permissions;
-    }
-     */
 
     public int getSize() {
         return size;
