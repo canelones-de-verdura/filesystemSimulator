@@ -8,7 +8,7 @@ public class fsLink implements fsIElement {
     private String name;
     private String ownerID;
     private String groupID; // TODO manejar permisos
-    private String permissions;
+    //private int permissions;
     private int size; // TODO manejar el tema del size
 
     // Metadata
@@ -18,10 +18,11 @@ public class fsLink implements fsIElement {
 
     public fsLink(fsIElement original, String new_name, String uid, String guid) {
         this.reference = original;
-
         this.name = new_name;
         this.ownerID = uid;
         this.groupID = guid;
+        //this.permissions = 622;
+        this.size = 10;
         this.last_access_d = this.last_modified_d = this.created_d = new Date();
     }
 
@@ -42,9 +43,11 @@ public class fsLink implements fsIElement {
         return groupID;
     }
 
-    public String getPermissions() {
+    /*
+    public int getPermissions() {
         return permissions;
     }
+     */
 
     public int getSize() {
         return size;

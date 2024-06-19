@@ -9,7 +9,7 @@ public interface fsIElement {
 
     public String getGUID();
 
-    public String getPermissions();
+    //public int getPermissions();
 
     public int getSize();
 

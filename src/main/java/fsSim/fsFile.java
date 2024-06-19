@@ -7,7 +7,7 @@ public class fsFile implements fsIElement {
     private String name;
     private String ownerID;
     private String groupID; // TODO manejar permisos
-    private String permissions;
+    //private int permissions;
     private int size;
 
     // Metadata
@@ -25,14 +25,12 @@ public class fsFile implements fsIElement {
         this.name = name;
         this.ownerID = uid;
         this.groupID = guid;
+        //this.permissions = 622;
         this.size = 0;
-
         this.last_access_d = this.last_modified_d = this.created_d = new Date();
         this.semi = new Semaphore(1);
         this.data = null;
         this.workingThread = null;
-
-        // ... ?
     }
 
     /* Getters */
@@ -48,9 +46,11 @@ public class fsFile implements fsIElement {
         return groupID;
     }
 
-    public String getPermissions() {
+    /*
+    public int getPermissions() {
         return permissions;
     }
+     */
 
     public int getSize() {
         return size;

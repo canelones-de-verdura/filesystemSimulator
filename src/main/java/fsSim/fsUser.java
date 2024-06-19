@@ -18,8 +18,6 @@ public class fsUser {
     private String home;
     private String shell;
 
-    private Date creation_d;
-    private Date expiring_d;
     private Date last_logged_d;
 
     // Semáforo para evitar accesos concurrentes
@@ -38,13 +36,6 @@ public class fsUser {
 
         this.loggedThread = null;
         this.semi = new Semaphore(1);
-
-        // Seteamos las fechas
-        this.creation_d = new Date();
-
-        Calendar calendar = Calendar.getInstance();
-        calendar.set(3000, Calendar.JANUARY, 1);
-        this.expiring_d = calendar.getTime();
 
         this.last_logged_d = null;
     }
@@ -105,14 +96,6 @@ public class fsUser {
         return shell;
     }
 
-    public Date getCreationDate() {
-        return creation_d;
-    }
-
-    public Date getExpirationDate() {
-        return expiring_d;
-    }
-
     public Date getLoginDate() {
         return last_logged_d;
     }
@@ -137,10 +120,6 @@ public class fsUser {
             groupID.remove(groupGUID);
 
         return true;
-    }
-
-    public void setExpirationDate(Date new_date) {
-        expiring_d = new_date;
     }
 
     public void setMainGroup(String new_main_group) {
