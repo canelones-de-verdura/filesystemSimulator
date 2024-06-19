@@ -6,6 +6,7 @@ import fsSim.fsDir;
 import fsSim.fsFile;
 import fsSim.fsIElement;
 import java.util.ArrayList;
+
 public class LsCommand extends BaseCommand {
     public LsCommand(CommandFactory commandFactory) {
         super(commandFactory);
@@ -14,20 +15,15 @@ public class LsCommand extends BaseCommand {
     }
 
     @Override
-    protected void internalHandle(String message, ArrayList<String> arguments, StringBuilder response, BigPotatoShell shell) {
-        String path = shell.PWD;
+    protected void internalHandle(String message, ArrayList<String> arguments, StringBuilder response,
+            BigPotatoShell shell) {
+        String path = composePath(message, shell.PWD);
         boolean showMetadata = false;
-        
+
         if (arguments.contains("l")) {
             showMetadata = true;
         }
 
-        if (!message.isEmpty() && !message.startsWith("/")) {
-            path = path + message;
-        }
-        if (message.startsWith("/")) {
-            path = message;
-        }
         fsIElement result = shell.fsManager.getElementInFs(path);
         // Si no se encuentra el archivo o directorio, se muestra un mensaje de error.
         if (result == null) {
@@ -76,11 +72,11 @@ public class LsCommand extends BaseCommand {
                             .append("  ");
                     response.append(((fsIElement) elementObj).getModifiedDate()).append("  ");
                     // relleno con espacios antes del numero hasta que ocupe 4 caracteres
-                    if(((fsIElement) elementObj).getSize() < 10){
+                    if (((fsIElement) elementObj).getSize() < 10) {
                         response.append("   ");
-                    } else if(((fsIElement) elementObj).getSize() < 100){
+                    } else if (((fsIElement) elementObj).getSize() < 100) {
                         response.append("  ");
-                    } else if(((fsIElement) elementObj).getSize() < 1000){
+                    } else if (((fsIElement) elementObj).getSize() < 1000) {
                         response.append(" ");
                     }
                     response.append(((fsIElement) elementObj).getSize()).append("  ");

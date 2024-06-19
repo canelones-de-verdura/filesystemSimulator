@@ -57,7 +57,7 @@ public abstract class BaseCommand {
     public boolean handle(String message, ArrayList<String> arguments, StringBuilder response,
             fsGui.BigPotatoShell shell) {
         if (canHandle(message, arguments)) {
-            try{
+            try {
                 internalHandle(message, arguments, response, shell);
                 return true;
             } catch (Exception e) {
@@ -86,13 +86,13 @@ public abstract class BaseCommand {
      * @return Path absoluto en formato string.
      */
     public String composePath(String message, String pwd) {
-        Stack <String> stack = new Stack<>();
+        Stack<String> stack = new Stack<>();
         if (!message.startsWith("/")) {
             for (String part : pwd.split("/")) {
                 if (!part.isEmpty()) {
-                    if(part.equals("..") && !stack.isEmpty()) {
+                    if (part.equals("..") && !stack.isEmpty()) {
                         stack.pop();
-                    } else {
+                    } else if (!part.equals(".")) {
                         stack.add(part);
                     }
                 }
@@ -100,7 +100,7 @@ public abstract class BaseCommand {
             for (String part : message.split("/")) {
                 if (part.equals("..") && !stack.isEmpty()) {
                     stack.pop();
-                } else if (!part.isEmpty()) {
+                } else if (!part.isEmpty() && !part.equals(".")) {
                     stack.add(part);
                 }
             }
@@ -108,7 +108,7 @@ public abstract class BaseCommand {
             for (String part : message.split("/")) {
                 if (part.equals("..") && !stack.isEmpty()) {
                     stack.pop();
-                } else if (!part.isEmpty()) {
+                } else if (!part.isEmpty() && !part.equals(".")) {
                     stack.add(part);
                 }
             }
@@ -118,6 +118,7 @@ public abstract class BaseCommand {
         for (String part : stack) {
             joiner.add(part);
         }
-        return "/" + joiner.toString();
+
+        return "/" + (joiner.toString().equals("..") ? "" : joiner.toString());
     }
 }
