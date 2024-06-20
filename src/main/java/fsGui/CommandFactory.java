@@ -26,6 +26,8 @@ public class CommandFactory {
         register(new CleanCommand(this));
         register(new MvCommand(this));
         register(new CpCommand(this));
+        register(new RmCommand(this));
+        register(new LnCommand(this));
         register(new UserDelCommand(this));
     }
 

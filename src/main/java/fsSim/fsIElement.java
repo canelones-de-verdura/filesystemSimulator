@@ -1,5 +1,6 @@
 package fsSim;
 
+import java.util.ArrayList;
 import java.util.Date;
 
 public interface fsIElement {
@@ -11,7 +12,9 @@ public interface fsIElement {
 
     public String getGUID();
 
-    //public int getPermissions();
+    public ArrayList<fsLink> getReferenced_by();
+
+    public void setReferenced_by(ArrayList<fsLink> referenced_by);
 
     public int getSize();
 

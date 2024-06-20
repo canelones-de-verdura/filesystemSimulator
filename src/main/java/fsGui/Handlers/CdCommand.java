@@ -2,6 +2,8 @@ package fsGui.Handlers;
 
 import fsGui.BigPotatoShell;
 import fsGui.CommandFactory;
+import fsSim.fsLink;
+
 import java.util.ArrayList;
 
 public class CdCommand extends BaseCommand {
@@ -19,6 +21,9 @@ public class CdCommand extends BaseCommand {
         } 
         absolutePath = composePath(message, shell.PWD);
         fsSim.fsIElement result = shell.fsManager.getElementInFs(absolutePath);
+        if (result instanceof fsSim.fsLink)
+            result = ((fsLink) result).getReference();
+
         if (result instanceof fsSim.fsDir) {
             shell.PWD = absolutePath;
             return;

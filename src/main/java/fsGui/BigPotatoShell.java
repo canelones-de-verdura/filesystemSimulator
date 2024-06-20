@@ -104,17 +104,18 @@ public class BigPotatoShell {
     /*
      * String onlyCommand = command.split(" ")[0];
      * switch (onlyCommand) {
-     * case "cp":
-     * case "mv":
      * case "tree":
+     * 
+     * 
+     * 
+     * 
      * case "rm":
+     * ln
      * 
      * case "chmod":
      * case "chown":
      * case "chgrp":
      * case "history":
-     * case "clear":
-     * case "usermod":
      * }
      */
 }

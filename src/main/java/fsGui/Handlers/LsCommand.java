@@ -5,6 +5,8 @@ import fsGui.CommandFactory;
 import fsSim.fsDir;
 import fsSim.fsFile;
 import fsSim.fsIElement;
+import fsSim.fsLink;
+
 import java.util.ArrayList;
 
 public class LsCommand extends BaseCommand {
@@ -31,6 +33,8 @@ public class LsCommand extends BaseCommand {
             return;
         }
         // Si el resultado es un directorio, se listan sus elementos.
+        if (result instanceof fsLink)
+            result = ((fsLink) result).getReference();
         if (result instanceof fsDir) {
             fsDir dir = (fsDir) result;
             // Información del . y ..

@@ -73,6 +73,11 @@ public class CpCommand extends BaseCommand {
         if (destino instanceof fsLink)
             destino = ((fsLink) destino).getReference();
 
+        if (destino == null) {
+            response.append("El enlace está roto.\n");
+            return;
+        }
+
         if (destino instanceof fsFile) {
             response.append("No se puede mover elementos a un archivo.\n");
             return;

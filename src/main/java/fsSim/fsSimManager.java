@@ -93,7 +93,7 @@ public class fsSimManager {
         // No rompemos si no hay user porque precisamos el método para la configuración
         // inicial.
         String[] dirs = path.split("/");
-        fsDir current_dir = filesystem_root;
+        fsIElement current_dir = filesystem_root;
 
         if (dirs.length == 0)
             return current_dir;
@@ -101,13 +101,17 @@ public class fsSimManager {
         for (int i = 1; i < dirs.length - 1; ++i) {
             String jumpto = dirs[i];
             if (jumpto != null) {
-                current_dir = (fsDir) current_dir.getElement(jumpto);
+                current_dir = ((fsDir) current_dir).getElement(jumpto);
+
+                if (current_dir instanceof fsLink)
+                    current_dir = ((fsLink) current_dir).getReference();
+
                 if (current_dir == null)
                     return null;
             }
         }
 
-        return current_dir.getElement(dirs[dirs.length - 1]);
+        return ((fsDir) current_dir).getElement(dirs[dirs.length - 1]);
     }
 
     public fsUser addUser(String name, String caller_uid) {
@@ -283,6 +287,12 @@ public class fsSimManager {
 
         // Creamos y colocamos el archivo
         fsIElement new_elem = new fsLink(reference, n_name, creator.getUID(), creator.getGUID());
+
+        if (reference.getReferenced_by() == null)
+            reference.setReferenced_by(new ArrayList<>());
+
+        reference.getReferenced_by().add((fsLink) new_elem);
+
         current_dir.move(new_elem);
         return true;
     }

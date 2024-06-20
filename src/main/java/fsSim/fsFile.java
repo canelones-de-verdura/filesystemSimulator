@@ -1,5 +1,6 @@
 package fsSim;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.concurrent.Semaphore;
 
@@ -9,7 +10,9 @@ public class fsFile implements fsIElement {
     private String groupID;
     private int size;
 
-    // Metadata
+    private ArrayList<fsLink> referenced_by;
+
+	// Metadata
     private Date created_d;
     private Date last_access_d;
     private Date last_modified_d;
@@ -25,6 +28,7 @@ public class fsFile implements fsIElement {
         this.ownerID = uid;
         this.groupID = guid;
         this.size = 0;
+        this.referenced_by = null;
         this.last_access_d = this.last_modified_d = this.created_d = new Date();
         this.semi = new Semaphore(1);
         this.data = null;
@@ -50,6 +54,14 @@ public class fsFile implements fsIElement {
 
     public int getSize() {
         return size;
+    }
+
+    public ArrayList<fsLink> getReferenced_by() {
+        return referenced_by;
+    }
+
+    public void setReferenced_by(ArrayList<fsLink> referenced_by) {
+        this.referenced_by = referenced_by;
     }
 
     public Date getCreationDate() {

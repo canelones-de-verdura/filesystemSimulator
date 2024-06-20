@@ -1,5 +1,6 @@
 package fsSim;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -10,6 +11,8 @@ public class fsDir implements fsIElement {
     private String ownerID;
     private String groupID;
     private int size;
+
+    private ArrayList<fsLink> referenced_by;
 
     // Metadata
     private Date created_d;
@@ -23,6 +26,7 @@ public class fsDir implements fsIElement {
         this.ownerID = uid;
         this.groupID = guid;
         this.size = 4096;
+        this.referenced_by = null;
         this.contents = new HashMap<>();
         this.contents.put("..", parent);
         this.contents.put(".", this);
@@ -48,6 +52,14 @@ public class fsDir implements fsIElement {
 
     public int getSize() {
         return size;
+    }
+
+    public ArrayList<fsLink> getReferenced_by() {
+        return referenced_by;
+    }
+
+    public void setReferenced_by(ArrayList<fsLink> referenced_by) {
+        this.referenced_by = referenced_by;
     }
 
     public Date getCreationDate() {
@@ -83,6 +95,11 @@ public class fsDir implements fsIElement {
 
     public void remove(String name) {
         last_access_d = last_modified_d = new Date();
+        fsIElement elem = contents.get(name);
+        if (elem.getReferenced_by() != null)
+            for (fsLink link : elem.getReferenced_by())
+                link.setReference(null);
+
         contents.remove(name);
     }
 
