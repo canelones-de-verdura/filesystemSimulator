@@ -193,13 +193,16 @@ public class fsSimManager {
 
         // Obtenemos la referencia de la carpeta padre
         String[] dirs = path.split("/");
-        fsDir current_dir = filesystem_root;
+        fsIElement current_dir = filesystem_root;
         String name = dirs[dirs.length - 1] == null ? dirs[dirs.length - 2] : dirs[dirs.length - 1];
 
         for (int i = 1; i < dirs.length - 1; ++i) {
             String jumpto = dirs[i];
             if (jumpto != null) {
-                current_dir = (fsDir) current_dir.getElement(jumpto);
+                if (current_dir instanceof fsLink)
+                    current_dir = ((fsLink) current_dir).getReference();
+
+                current_dir = ((fsDir) current_dir).getElement(jumpto);
                 // Chequeamos que el directorio exista
                 if (current_dir == null)
                     return false;
@@ -207,12 +210,12 @@ public class fsSimManager {
         }
 
         // Chequeamos que el nombre del nuevo elemento ya no esté en uso
-        if (current_dir.getElement(name) != null)
+        if (((fsDir) current_dir).getElement(name) != null)
             return false;
 
         // Creamos y colocamos el archivo
         fsFile new_elem = new fsFile(name, creator.getUID(), creator.getGUID());
-        current_dir.move(new_elem);
+        ((fsDir) current_dir).move(new_elem);
         return true;
     }
 
@@ -222,13 +225,16 @@ public class fsSimManager {
 
         // Obtenemos la referencia de la carpeta padre
         String[] dirs = path.split("/");
-        fsDir current_dir = filesystem_root;
+        fsIElement current_dir = filesystem_root;
         String name = dirs[dirs.length - 1] == null ? dirs[dirs.length - 2] : dirs[dirs.length - 1];
 
         for (int i = 1; i < dirs.length - 1; ++i) {
             String jumpto = dirs[i];
             if (jumpto != null) {
-                current_dir = (fsDir) current_dir.getElement(jumpto);
+                current_dir = ((fsDir) current_dir).getElement(jumpto);
+                if (current_dir instanceof fsLink)
+                    current_dir = ((fsLink) current_dir).getReference();
+
                 // Chequeamos que el directorio exista
                 if (current_dir == null)
                     return false;
@@ -236,12 +242,12 @@ public class fsSimManager {
         }
 
         // Chequeamos que el nombre del nuevo elemento ya no esté en uso
-        if (current_dir.getElement(name) != null)
+        if (((fsDir) current_dir).getElement(name) != null)
             return false;
 
         // Creamos y colocamos el directorio
-        fsDir new_elem = new fsDir(name, current_dir, creator.getUID(), creator.getGUID());
-        current_dir.move(new_elem);
+        fsDir new_elem = new fsDir(name, (fsDir) current_dir, creator.getUID(), creator.getGUID());
+        ((fsDir) current_dir).move(new_elem);
         return true;
     }
 
@@ -251,20 +257,26 @@ public class fsSimManager {
 
         // Obtenemos la referencia al elemento original
         String[] dirs = reference_path.split("/");
-        fsDir current_dir = filesystem_root;
+        fsIElement current_dir = filesystem_root;
         String r_name = dirs[dirs.length - 1] == null ? dirs[dirs.length - 2] : dirs[dirs.length - 1];
         fsIElement reference;
 
         for (int i = 1; i < dirs.length - 1; ++i) {
             String jumpto = dirs[i];
             if (jumpto != null) {
-                current_dir = (fsDir) current_dir.getElement(jumpto);
+                if (current_dir instanceof fsLink)
+                    current_dir = ((fsLink) current_dir).getReference();
+
+                current_dir = ((fsDir) current_dir).getElement(jumpto);
                 if (current_dir == null)
                     return false;
             }
         }
 
-        reference = current_dir.getElement(r_name);
+        if (current_dir instanceof fsLink)
+            current_dir = ((fsLink) current_dir).getReference();
+
+        reference = ((fsDir) current_dir).getElement(r_name);
         if (reference == null)
             return false;
 
@@ -276,7 +288,10 @@ public class fsSimManager {
         for (int i = 1; i < dirs.length - 1; ++i) {
             String jumpto = dirs[i];
             if (jumpto != null) {
-                current_dir = (fsDir) current_dir.getElement(jumpto);
+                if (current_dir instanceof fsLink)
+                    current_dir = ((fsLink) current_dir).getReference();
+
+                current_dir = ((fsDir) current_dir).getElement(jumpto);
                 if (current_dir == null)
                     return false;
             }
@@ -286,7 +301,7 @@ public class fsSimManager {
         // el archivo original
         if (!current_dir.getName().equals(n_name)) {
             // Chequeamos que el nombre del nuevo elemento ya no esté en uso
-            if (current_dir.getElement(n_name) != null)
+            if (((fsDir)current_dir).getElement(n_name) != null)
                 return false;
         } else {
             n_name = r_name;
@@ -300,7 +315,7 @@ public class fsSimManager {
 
         reference.getReferenced_by().add((fsLink) new_elem);
 
-        current_dir.move(new_elem);
+        ((fsDir) current_dir).move(new_elem);
         return true;
     }
 

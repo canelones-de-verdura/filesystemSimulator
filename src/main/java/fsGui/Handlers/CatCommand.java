@@ -2,6 +2,8 @@ package fsGui.Handlers;
 
 import fsGui.BigPotatoShell;
 import fsGui.CommandFactory;
+import fsSim.*;
+
 import java.util.ArrayList;
 
 public class CatCommand extends BaseCommand {
@@ -12,17 +14,15 @@ public class CatCommand extends BaseCommand {
 
     @Override
     protected void internalHandle(String message, ArrayList<String> arguments, StringBuilder response, BigPotatoShell shell) {
-        String absolutePath="/";
-        if(message.isEmpty()){
-            shell.PWD = "/";
-            return;
-        } 
-        absolutePath = composePath(message, shell.PWD);
+        String absolutePath = composePath(message, shell.PWD);
         fsSim.fsIElement result = shell.fsManager.getElementInFs(absolutePath);
-        if (result instanceof fsSim.fsFile) {
-            ((fsSim.fsFile) result).open();
-            response.append(((fsSim.fsFile) result).read() != null ? ((fsSim.fsFile) result).read() : "");
-            ((fsSim.fsFile) result).close();
+        if (result instanceof fsLink)
+            result = ((fsLink) result).getReference();
+
+        if (result instanceof fsFile) {
+            ((fsFile) result).open();
+            response.append(((fsFile) result).read() != null ? ((fsFile) result).read() : "");
+            ((fsFile) result).close();
             return;
         }
         response.append("No existe el archivo especificado.");
