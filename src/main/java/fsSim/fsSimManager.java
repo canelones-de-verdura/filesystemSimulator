@@ -14,7 +14,7 @@ public class fsSimManager {
 
     private ArrayList<fsUser> logged_users;
 
-    public static synchronized fsSimManager getInstance() {
+    public static fsSimManager getInstance() {
         if (instance == null)
             instance = new fsSimManager();
 

@@ -25,7 +25,6 @@ public class BigPotatoShell {
     public BigPotatoShell() {
         commandFactory = new CommandFactory();
         fsManager = fsSimManager.getInstance();
-        System.out.println("Thread Shell " + Thread.currentThread().getId());
         usersStack = new Stack<Map<fsUser, ArrayList<String>>>();
     }
 

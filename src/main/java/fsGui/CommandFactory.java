@@ -57,7 +57,6 @@ public class CommandFactory {
         }
         BaseCommand command = getCommand(commandName);
         if (command != null) {
-            System.out.println("Thread Command Factory " + Thread.currentThread().getId());
             boolean wasSuccess = command.handle(message, arguments, response, shell);
             if (!wasSuccess) {
                 response.setLength(0);

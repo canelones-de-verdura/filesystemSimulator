@@ -51,7 +51,6 @@ public class SimpleTerminal {
                             response = shell.proccessCommand(command);
                             shell.commandHistory.add(command);
                             historyIndex = shell.commandHistory.size();
-                            System.out.println("Terminal al procesar: " + Thread.currentThread().getId());
                         }
                         if (response.equals("dirtyterminal_pleasecleanme")) {
                             try {
