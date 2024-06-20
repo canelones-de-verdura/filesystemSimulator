@@ -5,7 +5,6 @@ import fsGui.CommandFactory;
 import fsSim.fsUser;
 
 import java.util.ArrayList;
-import java.util.Map;
 
 public class LoginCommand extends BaseCommand {
     public LoginCommand(CommandFactory commandFactory) {
@@ -25,11 +24,10 @@ public class LoginCommand extends BaseCommand {
         String username = loginArgs[0].trim();
         String password = loginArgs[1].trim();
 
-        Map<String, fsUser> users = shell.fsManager.getAllTheUsers();
-        for (String key : users.keySet()) {
-            if (users.get(key).getName().equals(username)) {
-                fsUser user = users.get(key);
-                if (shell.fsManager.Login(user.getUID(), password)) {
+        ArrayList<fsUser> users = shell.fsManager.getAllTheUsers();
+        for (fsUser user : users) {
+            if (user.getName().equals(username)) {
+                if (shell.fsManager.Login(user, password)) {
                     if (!shell.addUserToStack(user))
                         response.append("No se pudo iniciar sesión.");
                     else

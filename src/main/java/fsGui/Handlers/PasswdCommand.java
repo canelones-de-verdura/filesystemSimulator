@@ -5,7 +5,6 @@ import fsGui.CommandFactory;
 import fsSim.fsUser;
 
 import java.util.ArrayList;
-import java.util.Map;
 
 public class PasswdCommand extends BaseCommand {
     public PasswdCommand(CommandFactory commandFactory) {
@@ -15,7 +14,8 @@ public class PasswdCommand extends BaseCommand {
     }
 
     @Override
-    protected void internalHandle(String message, ArrayList<String> arguments, StringBuilder response, BigPotatoShell shell) {
+    protected void internalHandle(String message, ArrayList<String> arguments, StringBuilder response,
+            BigPotatoShell shell) {
         String[] messageParts = message.split(" ");
         if (arguments.contains("f")) {
             if (messageParts.length < 2) {
@@ -38,19 +38,17 @@ public class PasswdCommand extends BaseCommand {
             response.append("No tienes permisos para cambiar la contraseña.");
             return;
         }
-        Map<String, fsUser> users = shell.fsManager.getAllTheUsers();
-        for (String key : users.keySet()) {
-            if (users.get(key).getName().equals(username)) {
-                fsUser user = users.get(key);
-                if(user.setPassword(oldPassword, newPassword)){
+        ArrayList<fsUser> users = shell.fsManager.getAllTheUsers();
+        for (fsUser user : users) {
+            if (user.getName().equals(username)) {
+                if (user.setPassword(oldPassword, newPassword)) {
                     shell.fsManager.updatePasswdFile(user, 1);
                     response.append("Contraseña cambiada exitosamente.");
                     return;
-                }else{
+                } else {
                     response.append("Contraseña incorrecta.");
                     return;
                 }
-            
             }
         }
         response.append("Usuario no encontrado.");

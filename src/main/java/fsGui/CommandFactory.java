@@ -29,6 +29,8 @@ public class CommandFactory {
         register(new RmCommand(this));
         register(new LnCommand(this));
         register(new UserDelCommand(this));
+        register(new ChgrpCommand(this));
+        register(new ChownCommand(this));
     }
 
     public void register(BaseCommand command) {

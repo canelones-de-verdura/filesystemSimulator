@@ -36,6 +36,14 @@ public class fsLink implements fsIElement {
         this.reference = reference;
     }
 
+    public void setOwnerID(String ownerID) {
+		this.ownerID = ownerID;
+	}
+
+	public void setGroupID(String groupID) {
+		this.groupID = groupID;
+	}
+
     /* Getters */
     public fsIElement getReference() {
         return reference;

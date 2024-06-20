@@ -5,7 +5,6 @@ import fsGui.CommandFactory;
 import fsSim.fsUser;
 
 import java.util.ArrayList;
-import java.util.Map;
 
 public class UserDelCommand extends BaseCommand {
     public UserDelCommand(CommandFactory commandFactory) {
@@ -23,11 +22,11 @@ public class UserDelCommand extends BaseCommand {
         }
         String username = message.split(" ")[0].trim();
 
-        Map<String, fsUser> users = shell.fsManager.getAllTheUsers();
+        ArrayList<fsUser> users = shell.fsManager.getAllTheUsers();
         fsUser condenado = null;
-        for (String key : users.keySet()) {
-            if (users.get(key).getName().equals(username)) {
-                condenado = users.get(key);
+        for (fsUser user : users) {
+            if (user.getName().equals(username)) {
+                condenado = user;
                 break;
             }
         }

@@ -7,7 +7,7 @@ import java.util.concurrent.Semaphore;
 public class fsFile implements fsIElement {
     private String name;
     private String ownerID;
-    private String groupID;
+	private String groupID;
     private int size;
 
     private ArrayList<fsLink> referenced_by;
@@ -38,6 +38,14 @@ public class fsFile implements fsIElement {
     public void setName(String new_name) {
         this.name = new_name;
     }
+
+    public void setOwnerID(String ownerID) {
+		this.ownerID = ownerID;
+	}
+
+	public void setGroupID(String groupID) {
+		this.groupID = groupID;
+	}
 
     /* Getters */
     public String getName() {

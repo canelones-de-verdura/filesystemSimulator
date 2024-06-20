@@ -6,6 +6,10 @@ import java.util.Date;
 public interface fsIElement {
     public void setName(String new_name);
 
+    public void setOwnerID(String ownerID);
+
+	public void setGroupID(String groupID);
+
     public String getName();
 
     public String getOwnerID();

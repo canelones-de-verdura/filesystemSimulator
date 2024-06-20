@@ -37,6 +37,14 @@ public class fsDir implements fsIElement {
         this.name = new_name;
     }
 
+    public void setOwnerID(String ownerID) {
+		this.ownerID = ownerID;
+	}
+
+	public void setGroupID(String groupID) {
+		this.groupID = groupID;
+	}
+
     /* Getters */
     public String getName() {
         return name;
