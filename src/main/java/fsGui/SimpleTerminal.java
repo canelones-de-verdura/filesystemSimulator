@@ -49,7 +49,7 @@ public class SimpleTerminal {
                             response = "";
                         } else {
                             response = shell.proccessCommand(command);
-                            shell.commandHistory.add(command); // Añadir comando al historial si no está vacío
+                            shell.commandHistory.add(command);
                             historyIndex = shell.commandHistory.size();
                         }
                         if(response.equals("dirtyterminal_pleasecleanme")) {

@@ -37,7 +37,7 @@ public class SimpleNano {
         frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         frame.setSize(800, 600);
         frame.setVisible(true);
-
+        file.open();
         // Setea el contenido del archivo
         textArea.setText(file.read());
 
@@ -75,7 +75,6 @@ public class SimpleNano {
     }
 
     private void saveFile() {
-        file.open();
         if (file.write(textArea.getText(), true)) {
             JOptionPane.showMessageDialog(frame, "Archivo guardado correctamente.", "Guardado", JOptionPane.INFORMATION_MESSAGE);
         } else {
