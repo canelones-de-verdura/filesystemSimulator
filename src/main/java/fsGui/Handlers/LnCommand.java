@@ -4,7 +4,6 @@ import java.util.ArrayList;
 
 import fsGui.BigPotatoShell;
 import fsGui.CommandFactory;
-import fsSim.*;
 
 public class LnCommand extends BaseCommand {
     public LnCommand(CommandFactory commandFactory) {
@@ -39,8 +38,8 @@ public class LnCommand extends BaseCommand {
     public String showHelp() {
         StringBuilder help = new StringBuilder();
         help.append("-----------------------------\n");
-        help.append("Uso: mv [opción] [origen] [destino]\n");
-        help.append("Mueve el archivo origen al destino.\n");
+        help.append("Uso: ln [origen] [destino]\n");
+        help.append("Crea un link del elemento al origen, y lo guarda en el destino.\n");
         help.append("-----------------------------");
         return help.toString();
     }
