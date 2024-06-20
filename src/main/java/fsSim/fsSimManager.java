@@ -1,9 +1,6 @@
 package fsSim;
 
 import java.util.ArrayList;
-import java.util.Map;
-
-import org.checkerframework.checker.units.qual.g;
 
 public class fsSimManager {
     private static fsSimManager instance = null;
@@ -11,9 +8,6 @@ public class fsSimManager {
     private fsUser groot;
     private fsGroup root_group;
     private fsDir filesystem_root;
-
-    private Map<String, fsUser> users_by_uid;
-    private Map<String, fsGroup> groups_by_guid;
 
     private ArrayList<fsUser> users;
     private ArrayList<fsGroup> groups;
@@ -37,16 +31,10 @@ public class fsSimManager {
         this.logged_users = null;
 
         // Cosas del "sistema"
-        // this.users_by_uid = new HashMap<>();
-        // this.groups_by_guid = new HashMap<>();
-
         this.users = new ArrayList<>();
         this.groups = new ArrayList<>();
 
         // Agregamos a las colecciones
-        // this.users_by_uid.put(this.groot.getUID(), this.groot);
-        // this.groups_by_guid.put(this.root_group.getGUID(), this.root_group);
-
         this.users.add(this.groot);
         this.groups.add(this.root_group);
 
@@ -130,9 +118,6 @@ public class fsSimManager {
         fsGroup new_group = new fsGroup(name);
         fsUser new_user = new fsUser(name, "", new_group.getGUID(), null, new_home, "/bin/bigpotato");
 
-        // users_by_uid.put(new_user.getUID(), new_user);
-        // groups_by_guid.put(new_group.getGUID(), new_group);
-
         users.add(new_user);
         groups.add(new_group);
 
@@ -171,7 +156,6 @@ public class fsSimManager {
         }
 
         updatePasswdFile(usr, -1);
-        // users_by_uid.remove(uid);
         users.remove(usr);
     }
 
@@ -180,7 +164,7 @@ public class fsSimManager {
             throw new RuntimeException();
 
         fsGroup new_group = new fsGroup(name);
-        groups_by_guid.put(new_group.getGUID(), new_group);
+        groups.add(new_group);
         updateGroupFile(new_group);
     }
 
@@ -195,13 +179,6 @@ public class fsSimManager {
         return null;
     }
 
-    // public Map<String, fsUser> getAllTheUsers() {
-    // // Al igual que getElementInFs(...) no podemos romper todo si el usuario no
-    // está
-    // // logueado
-    // return users_by_uid;
-    // }
-    //
     public ArrayList<fsUser> getAllTheUsers() {
         return users;
     }
@@ -209,13 +186,6 @@ public class fsSimManager {
     public ArrayList<fsGroup> getAllTheGroups() {
         return groups;
     }
-
-    // public Map<String, fsGroup> getAllTheGroups() {
-    // if (logged_users == null)
-    // throw new RuntimeException();
-    //
-    // return groups_by_guid;
-    // }
 
     public boolean createFile(String path, fsUser creator) {
         if (!logged_users.contains(creator))
