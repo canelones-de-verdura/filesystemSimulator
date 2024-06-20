@@ -5,7 +5,7 @@ import java.util.ArrayList;
 public class EchoCommand extends BaseCommand {
     public EchoCommand(CommandFactory commandFactory) {
         super(commandFactory);
-        super.keywords = new String [] { "echo", "shout" };
+        super.keywords = new String [] { "echo" };
     }
 
     @Override
@@ -16,10 +16,10 @@ public class EchoCommand extends BaseCommand {
     @Override
     public String showHelp() {
         StringBuilder help = new StringBuilder();
-        help.append("-----------------------------\n");
-        help.append("Uso: echo-shout [mensaje]\n");
+        help.append("--------------------------------------------------------\n");
+        help.append("Uso: echo [mensaje]\n");
         help.append("Muestra el mensaje ingresado.\n");
-        help.append("-----------------------------");
+        help.append("--------------------------------------------------------");
         return help.toString();
     }
 }

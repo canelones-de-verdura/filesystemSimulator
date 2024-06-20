@@ -37,10 +37,10 @@ public class LnCommand extends BaseCommand {
     @Override
     public String showHelp() {
         StringBuilder help = new StringBuilder();
-        help.append("-----------------------------\n");
+        help.append("--------------------------------------------------------\n");
         help.append("Uso: ln [origen] [destino]\n");
         help.append("Crea un link del elemento al origen, y lo guarda en el destino.\n");
-        help.append("-----------------------------");
+        help.append("--------------------------------------------------------");
         return help.toString();
     }
 }

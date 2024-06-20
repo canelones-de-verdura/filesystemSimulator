@@ -31,10 +31,10 @@ public class CatCommand extends BaseCommand {
     @Override
     public String showHelp() {
         StringBuilder help = new StringBuilder();
-        help.append("-----------------------------\n");
+        help.append("--------------------------------------------------------\n");
         help.append("Uso: cat [archivo]\n");
         help.append("Muestra el contenido del archivo especificado.\n");
-        help.append("-----------------------------");
+        help.append("--------------------------------------------------------");
         return help.toString();
     }
 }

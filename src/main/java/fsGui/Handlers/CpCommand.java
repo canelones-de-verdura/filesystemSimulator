@@ -98,10 +98,12 @@ public class CpCommand extends BaseCommand {
     @Override
     public String showHelp() {
         StringBuilder help = new StringBuilder();
-        help.append("-----------------------------\n");
-        help.append("Uso: cp [opción] [origen] [destino]\n");
+        help.append("--------------------------------------------------------\n");
+        help.append("Uso: cp [argumentos] [origen] [destino]\n");
         help.append("Mueve el archivo origen al destino.\n");
-        help.append("-----------------------------");
+        help.append("Argumentos:\n");
+        help.append(" -r: Renombra el archivo en el destino.\n");
+        help.append("--------------------------------------------------------");
         return help.toString();
     }
 }

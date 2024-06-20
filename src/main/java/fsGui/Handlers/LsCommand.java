@@ -67,8 +67,10 @@ public class LsCommand extends BaseCommand {
                     fsIElement elementObj = shell.fsManager.getElementInFs(pathToCurrentElement);
                     if (elementObj instanceof fsDir) {
                         response.append("d").append("  ");
-                    } else {
+                    } else if (elementObj instanceof fsFile) {
                         response.append("-").append("  ");
+                    } else {
+                        response.append("l").append("  ");
                     }
                     response.append(shell.fsManager.getUser(((fsIElement) elementObj).getOwnerID()).getName())
                             .append("  ");
@@ -106,10 +108,12 @@ public class LsCommand extends BaseCommand {
     @Override
     public String showHelp() {
         StringBuilder help = new StringBuilder();
-        help.append("-----------------------------\n");
-        help.append("Uso: ls\n");
-        help.append("Lista los archivos y directorios del directorio actual.\n");
-        help.append("-----------------------------");
+        help.append("--------------------------------------------------------\n");
+        help.append("Uso: ls [argumentos] [ruta]\n");
+        help.append("Lista los archivos y directorios del directorio especificado o del directorio actual.\n");
+        help.append("Argumentos:\n");
+        help.append(" -l: Muestra información detallada de los elementos.\n");
+        help.append("--------------------------------------------------------");
         return help.toString();
     }
 }

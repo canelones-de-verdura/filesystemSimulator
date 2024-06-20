@@ -5,7 +5,7 @@ import java.util.ArrayList;
 public class ManCommand extends BaseCommand {
     public ManCommand(CommandFactory commandFactory) {
         super(commandFactory);
-        super.keywords = new String [] { "man", "help" };
+        super.keywords = new String [] { "man" };
     }
 
     @Override
@@ -28,11 +28,11 @@ public class ManCommand extends BaseCommand {
     @Override
     public String showHelp() {
         StringBuilder help = new StringBuilder();
-        help.append("-----------------------------\n");
-        help.append("Uso: man-help [comando]\n");
+        help.append("--------------------------------------------------------\n");
+        help.append("Uso: man [comando]\n");
         help.append("Muestra la ayuda del comando ingresado.\n");
         help.append("Si no se especifica un comando, se muestra la ayuda general.\n");
-        help.append("-----------------------------");
+        help.append("--------------------------------------------------------");
         return help.toString();
     }
 }

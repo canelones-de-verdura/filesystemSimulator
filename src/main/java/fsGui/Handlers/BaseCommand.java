@@ -70,9 +70,9 @@ public abstract class BaseCommand {
     // Muestra la ayuda del comando
     public String showHelp() {
         StringBuilder help = new StringBuilder();
-        help.append("-----------------------------\n");
+        help.append("--------------------------------------------------------\n");
         help.append("No hay ayuda disponible para este comando\n");
-        help.append("-----------------------------");
+        help.append("--------------------------------------------------------");
         return help.toString();
     }
 

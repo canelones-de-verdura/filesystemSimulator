@@ -12,7 +12,6 @@ public class CommandFactory {
         register(new ManCommand(this));
         register(new EchoCommand(this));
         register(new ENanoCommand(this));
-        register(new EasterEggsCommand(this));
         register(new ExitCommand(this));
         register(new LsCommand(this));
         register(new CdCommand(this));
@@ -31,6 +30,8 @@ public class CommandFactory {
         register(new UserDelCommand(this));
         register(new ChgrpCommand(this));
         register(new ChownCommand(this));
+        register(new HistoryCommand(this));
+        register(new TreeCommand(this));
     }
 
     public void register(BaseCommand command) {

@@ -75,10 +75,10 @@ public class ChownCommand extends BaseCommand {
     @Override
     public String showHelp() {
         StringBuilder help = new StringBuilder();
-        help.append("-----------------------------\n");
-        help.append("Uso: chown usuario[:grupo] [ruta del archivo]\n");
+        help.append("--------------------------------------------------------\n");
+        help.append("Uso: chown [usuario:grupo] [ruta]\n");
         help.append("Cambia el dueño y grupo de un elemento.\n");
-        help.append("-----------------------------");
+        help.append("--------------------------------------------------------");
         return help.toString();
     }
 }

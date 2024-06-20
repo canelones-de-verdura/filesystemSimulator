@@ -50,10 +50,10 @@ public class LoginCommand extends BaseCommand {
     @Override
     public String showHelp() {
         StringBuilder help = new StringBuilder();
-        help.append("-----------------------------\n");
+        help.append("--------------------------------------------------------\n");
         help.append("Uso: login [usuario] [contraseña]\n");
         help.append("Inicia sesión con el usuario especificado.\n");
-        help.append("-----------------------------");
+        help.append("--------------------------------------------------------");
         return help.toString();
     }
 }

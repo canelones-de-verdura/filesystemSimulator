@@ -34,10 +34,10 @@ public class RmCommand extends BaseCommand {
     @Override
     public String showHelp() {
         StringBuilder help = new StringBuilder();
-        help.append("-----------------------------\n");
+        help.append("--------------------------------------------------------\n");
         help.append("Uso: rm [archivo]\n");
         help.append("Borra el elemento con el nombre especificado.\n");
-        help.append("-----------------------------");
+        help.append("--------------------------------------------------------");
         return help.toString();
     }
 }

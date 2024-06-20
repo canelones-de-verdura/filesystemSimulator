@@ -7,7 +7,7 @@ import java.util.ArrayList;
 public class ENanoCommand extends BaseCommand {
     public ENanoCommand(CommandFactory commandFactory) {
         super(commandFactory);
-        super.keywords = new String [] { "enano", "nano" };
+        super.keywords = new String [] { "enano" };
     }
 
     @Override
@@ -41,10 +41,10 @@ public class ENanoCommand extends BaseCommand {
     @Override
     public String showHelp() {
         StringBuilder help = new StringBuilder();
-        help.append("-----------------------------\n");
-        help.append("Uso: enano-nano [nombre-de-archivo]\n");
+        help.append("--------------------------------------------------------\n");
+        help.append("Uso: enano [nombre-de-archivo]\n");
         help.append("Editor de texto enano.\n");
-        help.append("-----------------------------");
+        help.append("--------------------------------------------------------");
         return help.toString();
     }
 }

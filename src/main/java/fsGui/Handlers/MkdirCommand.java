@@ -33,10 +33,10 @@ public class MkdirCommand extends BaseCommand {
     @Override
     public String showHelp() {
         StringBuilder help = new StringBuilder();
-        help.append("-----------------------------\n");
+        help.append("--------------------------------------------------------\n");
         help.append("Uso: mkdir [directorio]\n");
         help.append("Crea un directorio con el nombre especificado.\n");
-        help.append("-----------------------------");
+        help.append("--------------------------------------------------------");
         return help.toString();
     }
 }

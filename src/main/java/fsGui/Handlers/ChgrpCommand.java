@@ -55,10 +55,10 @@ public class ChgrpCommand extends BaseCommand {
     @Override
     public String showHelp() {
         StringBuilder help = new StringBuilder();
-        help.append("-----------------------------\n");
-        help.append("Uso: chown [grupo] [ruta del archivo]\n");
+        help.append("--------------------------------------------------------\n");
+        help.append("Uso: chown [grupo] [ruta]\n");
         help.append("Cambia el grupo de un elemento.\n");
-        help.append("-----------------------------");
+        help.append("--------------------------------------------------------");
         return help.toString();
     }
 }

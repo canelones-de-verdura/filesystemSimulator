@@ -12,7 +12,6 @@ public class SimpleTerminal {
     BigPotatoShell shell;
     int historyIndex;
     Style promptStyle;
-    Style userCommandStyle;
     Style shellResponseStyle;
     int promptPosition;
 
@@ -30,8 +29,6 @@ public class SimpleTerminal {
         StyledDocument doc = terminal.getStyledDocument();
         promptStyle = doc.addStyle("PromptStyle", null);
         StyleConstants.setForeground(promptStyle, Color.BLUE);
-        userCommandStyle = doc.addStyle("UserCommandStyle", null);
-        StyleConstants.setForeground(userCommandStyle, Color.BLACK);
         shellResponseStyle = doc.addStyle("ShellResponseStyle", null);
         StyleConstants.setForeground(shellResponseStyle, Color.GRAY);
 
@@ -46,18 +43,20 @@ public class SimpleTerminal {
                         String command = doc.getText(promptPosition, pos - promptPosition).trim();
                         // solo tomo el comando después del caracter $
                         command = command.substring(command.indexOf("$") + 1).trim();
-                        appendToTerminal("\n", userCommandStyle);
+                        appendToTerminal("\n", promptStyle);
                         String response;
                         if(command.isEmpty()) {
                             response = "";
                         } else {
                             response = shell.proccessCommand(command);
+                            shell.commandHistory.add(command); // Añadir comando al historial si no está vacío
+                            historyIndex = shell.commandHistory.size();
                         }
                         if(response.equals("dirtyterminal_pleasecleanme")) {
                             try {
                                 StyledDocument doc = terminal.getStyledDocument();
                                 // Es la forma que encontré de bypassear el filtro del document
-                                // Pd: Sí, es mi fecha de cumpleaños en negativo :D
+                                // Pd: Sí, es mi fecha de cumpleaños en negativo :D (Soy Facu)
                                 doc.remove(-25092004, -25092004);
                             } catch (BadLocationException ex) {
                                 ex.printStackTrace();
@@ -69,19 +68,18 @@ public class SimpleTerminal {
                         }
                         appendToTerminal(response.isEmpty() ? "" : response + "\n", shellResponseStyle);
                         terminal.setCaretPosition(doc.getLength());
-                        shell.commandHistory.add(command);
-                        historyIndex = shell.commandHistory.size();
                         showPrompt();
                         promptPosition = doc.getLength();
                     } catch (BadLocationException ex) {
                         ex.printStackTrace();
                     }
-                    e.consume(); // Prevent newline being added to the document
+                    e.consume();
                 } else if (e.getKeyCode() == KeyEvent.VK_UP) {
                     if (historyIndex > 0) {
                         historyIndex--;
                         replaceCurrentCommand(shell.commandHistory.get(historyIndex));
                     }
+                    e.consume();
                 } else if (e.getKeyCode() == KeyEvent.VK_DOWN) {
                     if (historyIndex < shell.commandHistory.size() - 1) {
                         historyIndex++;
@@ -90,6 +88,7 @@ public class SimpleTerminal {
                         replaceCurrentCommand("");
                         historyIndex = shell.commandHistory.size();
                     }
+                    e.consume();
                 } else if (pos < promptPosition) {
                     terminal.setCaretPosition(doc.getLength());
                 }
@@ -149,8 +148,8 @@ public class SimpleTerminal {
         try {
             StyledDocument doc = terminal.getStyledDocument();
             doc.remove(promptPosition, doc.getLength() - promptPosition);
-            doc.insertString(promptPosition, text, userCommandStyle);
-            terminal.setCaretPosition(doc.getLength());
+            doc.insertString(promptPosition, text, promptStyle);
+            SwingUtilities.invokeLater(() -> terminal.setCaretPosition(doc.getLength()));
         } catch (BadLocationException e) {
             e.printStackTrace();
         }

@@ -58,12 +58,12 @@ public class PasswdCommand extends BaseCommand {
     @Override
     public String showHelp() {
         StringBuilder help = new StringBuilder();
-        help.append("-----------------------------\n");
+        help.append("--------------------------------------------------------\n");
         help.append("Uso: passwd [usuario] [vieja contraseña] [nueva contraseña]\n");
-        help.append("Uso: passwd -f [usuario] [primera contraseña]\n");
         help.append("Cambia la contraseña del usuario especificado.\n");
-        help.append("En caso de usar -f, se asigna la primera contraseña como nueva contraseña.\n");
-        help.append("-----------------------------");
+        help.append("Argumentos:\n");
+        help.append("  -f: Setea la contraseña por primera vez, no requiere la vieja contraseña.\n");
+        help.append("--------------------------------------------------------");
         return help.toString();
     }
 }
