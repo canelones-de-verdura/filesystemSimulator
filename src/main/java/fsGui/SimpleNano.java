@@ -18,7 +18,7 @@ public class SimpleNano {
     public SimpleNano(fsFile file) {
         this.file = file;
 
-        if (!file.open(Thread.currentThread())) {
+        if (!file.open()) {
             return;
         }
 

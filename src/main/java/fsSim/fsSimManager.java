@@ -53,11 +53,11 @@ public class fsSimManager {
 
     }
 
-    public boolean Login(fsUser user, String password, Thread t) {
+    public boolean Login(fsUser user, String password) {
         if (logged_users == null)
             logged_users = new ArrayList<>();
 
-        if (user != null && user.LogIn(password, t))
+        if (user != null && user.LogIn(password))
             logged_users.add(user);
         else
             return false;
@@ -330,7 +330,7 @@ public class fsSimManager {
                 user.getGUID(), user.getHome(), user.getShell());
 
         fsFile passwd = (fsFile) getElementInFs("/etc/passwd");
-        passwd.open(Thread.currentThread());
+        passwd.open();
         if (opt == 0) {
             if (passwd.read() != null)
                 line = "\n" + line;
@@ -364,7 +364,7 @@ public class fsSimManager {
         String line = String.format("%s:%s\n", group.getName(), group.getGUID());
 
         fsFile passwd = (fsFile) getElementInFs("/etc/group");
-        passwd.open(Thread.currentThread());
+        passwd.open();
         passwd.write(line, false);
         passwd.close();
     }

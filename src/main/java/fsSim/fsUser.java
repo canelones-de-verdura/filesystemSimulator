@@ -17,7 +17,7 @@ public class fsUser {
 
     private Date last_logged_d;
 
-    private Thread loggedThread;
+    private boolean logged;
 
     private int failed_login_attempts;
 
@@ -29,28 +29,28 @@ public class fsUser {
         this.home = home;
         this.shell = shell;
 
-        this.loggedThread = null;
+        this.logged = false;
 
         this.last_logged_d = null;
     }
 
-    public boolean LogIn(String password, Thread t) {
+    public boolean LogIn(String password) {
         if (!this.password.equals(Hashing.sha256().hashString(password, StandardCharsets.UTF_8).toString())) {
             failed_login_attempts++;
             return false;
         }
 
-        if (loggedThread != null && !t.equals(loggedThread))
+        if (logged)
             return false;
 
-        loggedThread = t;
+        logged = true;
         this.last_logged_d = new Date();
 
         return true;
     }
 
     public void LogOut() {
-        loggedThread = null;
+        logged = false;
     }
 
     /* Getters */

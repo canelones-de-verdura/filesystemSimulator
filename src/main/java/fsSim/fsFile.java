@@ -16,7 +16,7 @@ public class fsFile implements fsIElement {
     private Date last_access_d;
     private Date last_modified_d;
 
-    private Thread workingThread;
+    private boolean opened;
 
     private String data;
 
@@ -28,7 +28,7 @@ public class fsFile implements fsIElement {
         this.referenced_by = null;
         this.last_access_d = this.last_modified_d = this.created_d = new Date();
         this.data = null;
-        this.workingThread = null;
+        this.opened = false;
     }
 
     public void setName(String new_name) {
@@ -81,25 +81,25 @@ public class fsFile implements fsIElement {
     }
 
     /* Primitivas para manejar archivos */
-    public synchronized boolean open(Thread t) {
-        if (workingThread != null)
+    public synchronized boolean open() {
+        if (opened)
             return false;
 
-        workingThread = t;
+        opened = true;
         last_access_d = new Date();
         return true;
     }
 
     public synchronized boolean close() {
-        if (workingThread == null)
+        if (!opened)
             return false;
 
-        workingThread = null;
+        opened = false;
         return true;
     }
 
     public synchronized boolean write(String new_data, boolean overwrite) {
-        if (workingThread == null)
+        if (!opened)
             return false;
 
         if (overwrite || (data == null)) {

@@ -6,7 +6,7 @@ import java.awt.*;
 import java.awt.event.*;
 import java.util.ArrayList;
 
-public class SimpleTerminal implements Runnable {
+public class SimpleTerminal {
     JFrame f;
     JTextPane terminal;
     BigPotatoShell shell;
@@ -15,8 +15,7 @@ public class SimpleTerminal implements Runnable {
     Style shellResponseStyle;
     int promptPosition;
 
-    @Override
-    public void run() {
+    public SimpleTerminal() {
         f = new JFrame();
         terminal = new JTextPane();
         terminal.setFont(new Font("Monospaced", Font.PLAIN, 13));
@@ -52,6 +51,7 @@ public class SimpleTerminal implements Runnable {
                             response = shell.proccessCommand(command);
                             shell.commandHistory.add(command);
                             historyIndex = shell.commandHistory.size();
+                            System.out.println("Terminal al procesar: " + Thread.currentThread().getId());
                         }
                         if (response.equals("dirtyterminal_pleasecleanme")) {
                             try {

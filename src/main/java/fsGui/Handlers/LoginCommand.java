@@ -27,17 +27,14 @@ public class LoginCommand extends BaseCommand {
         ArrayList<fsUser> users = shell.fsManager.getAllTheUsers();
         for (fsUser user : users) {
             if (user.getName().equals(username)) {
-                Thread this_t = Thread.currentThread();
-                // TODO
-                System.err.println(this_t.getId());
-                if (shell.fsManager.Login(user, password, this_t)) {
+                if (shell.fsManager.Login(user, password)) {
                     if (!shell.addUserToStack(user))
                         response.append("No se pudo iniciar sesión.");
                     else
                         response.append("Último inicio de sesión " + user.getLoginDate() + ".");
                     return;
                 } else {
-                    response.append("Usuario o contraseña incorrectos.");
+                    response.append("Usuario ya en sesión o credenciales incorrectas.");
                     int fails = user.getFailedLoginAttempts();
                     response.append("\nIntentos fallidos: " + fails + ".");
                     if (fails > 5)

@@ -19,8 +19,13 @@ public class BigPotatoShell {
     public fsUser user; // current user
     public ArrayList<String> commandHistory;
     private Stack<Map<fsUser, ArrayList<String>>> usersStack;
+    private CommandFactory commandFactory;
+    public fsSim.fsSimManager fsManager;
 
     public BigPotatoShell() {
+        commandFactory = new CommandFactory();
+        fsManager = fsSimManager.getInstance();
+        System.out.println("Thread Shell " + Thread.currentThread().getId());
         usersStack = new Stack<Map<fsUser, ArrayList<String>>>();
     }
 
@@ -61,8 +66,8 @@ public class BigPotatoShell {
         return user_return;
     }
 
-    private CommandFactory commandFactory = new CommandFactory();
-    public fsSim.fsSimManager fsManager = fsSimManager.getInstance();
+    // private CommandFactory commandFactory = new CommandFactory();
+    // public fsSim.fsSimManager fsManager = fsSimManager.getInstance();
 
     /**
      * Procesa un comando ingresado por el usuario.
