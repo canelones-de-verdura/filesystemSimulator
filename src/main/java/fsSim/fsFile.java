@@ -2,23 +2,20 @@ package fsSim;
 
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.concurrent.Semaphore;
 
 public class fsFile implements fsIElement {
     private String name;
     private String ownerID;
-	private String groupID;
+    private String groupID;
     private int size;
 
     private ArrayList<fsLink> referenced_by;
 
-	// Metadata
+    // Metadata
     private Date created_d;
     private Date last_access_d;
     private Date last_modified_d;
 
-    // Semáforo para evitar accesos concurrentes
-    private Semaphore semi;
     private Thread workingThread;
 
     private String data;
@@ -30,7 +27,6 @@ public class fsFile implements fsIElement {
         this.size = 0;
         this.referenced_by = null;
         this.last_access_d = this.last_modified_d = this.created_d = new Date();
-        this.semi = new Semaphore(1);
         this.data = null;
         this.workingThread = null;
     }
@@ -40,12 +36,12 @@ public class fsFile implements fsIElement {
     }
 
     public void setOwnerID(String ownerID) {
-		this.ownerID = ownerID;
-	}
+        this.ownerID = ownerID;
+    }
 
-	public void setGroupID(String groupID) {
-		this.groupID = groupID;
-	}
+    public void setGroupID(String groupID) {
+        this.groupID = groupID;
+    }
 
     /* Getters */
     public String getName() {
@@ -85,43 +81,35 @@ public class fsFile implements fsIElement {
     }
 
     /* Primitivas para manejar archivos */
-    public void open() {
-        try {
-            semi.acquire();
-            workingThread = Thread.currentThread();
-            last_access_d = new Date();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-            System.out.println("🥱");
-        }
+    public synchronized boolean open(Thread t) {
+        if (workingThread != null)
+            return false;
+
+        workingThread = t;
+        last_access_d = new Date();
+        return true;
     }
 
-    public void close() {
+    public synchronized boolean close() {
+        if (workingThread == null)
+            return false;
+
         workingThread = null;
-        semi.release();
+        return true;
     }
 
     public synchronized boolean write(String new_data, boolean overwrite) {
-        if (semi.availablePermits() != 0)
+        if (workingThread == null)
             return false;
 
-        if (workingThread != Thread.currentThread())
-            return false;
-
-        try {
-            if (overwrite || (data == null)) {
-                data = new_data;
-            } else {
-                data = data.concat(new_data);
-            }
-            last_modified_d = new Date();
-            size = data.length();
-            return true;
-        } catch (Exception e) {
-            e.printStackTrace();
-            System.out.println("🥱");
-            return false;
+        if (overwrite || (data == null)) {
+            data = new_data;
+        } else {
+            data = data.concat(new_data);
         }
+        last_modified_d = new Date();
+        size = data.length();
+        return true;
     }
 
     public String read() {

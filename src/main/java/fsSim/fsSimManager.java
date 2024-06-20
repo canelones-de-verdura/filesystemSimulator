@@ -14,7 +14,7 @@ public class fsSimManager {
 
     private ArrayList<fsUser> logged_users;
 
-    public static fsSimManager getInstance() {
+    public static synchronized fsSimManager getInstance() {
         if (instance == null)
             instance = new fsSimManager();
 
@@ -53,11 +53,11 @@ public class fsSimManager {
 
     }
 
-    public boolean Login(fsUser user, String password) {
+    public boolean Login(fsUser user, String password, Thread t) {
         if (logged_users == null)
             logged_users = new ArrayList<>();
 
-        if (user != null && user.LogIn(password))
+        if (user != null && user.LogIn(password, t))
             logged_users.add(user);
         else
             return false;
@@ -301,7 +301,7 @@ public class fsSimManager {
         // el archivo original
         if (!current_dir.getName().equals(n_name)) {
             // Chequeamos que el nombre del nuevo elemento ya no esté en uso
-            if (((fsDir)current_dir).getElement(n_name) != null)
+            if (((fsDir) current_dir).getElement(n_name) != null)
                 return false;
         } else {
             n_name = r_name;
@@ -330,7 +330,7 @@ public class fsSimManager {
                 user.getGUID(), user.getHome(), user.getShell());
 
         fsFile passwd = (fsFile) getElementInFs("/etc/passwd");
-        passwd.open();
+        passwd.open(Thread.currentThread());
         if (opt == 0) {
             if (passwd.read() != null)
                 line = "\n" + line;
@@ -364,7 +364,7 @@ public class fsSimManager {
         String line = String.format("%s:%s\n", group.getName(), group.getGUID());
 
         fsFile passwd = (fsFile) getElementInFs("/etc/group");
-        passwd.open();
+        passwd.open(Thread.currentThread());
         passwd.write(line, false);
         passwd.close();
     }

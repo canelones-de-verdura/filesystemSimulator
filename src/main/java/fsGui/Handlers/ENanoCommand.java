@@ -7,13 +7,14 @@ import java.util.ArrayList;
 public class ENanoCommand extends BaseCommand {
     public ENanoCommand(CommandFactory commandFactory) {
         super(commandFactory);
-        super.keywords = new String [] { "enano" };
+        super.keywords = new String[] { "enano" };
     }
 
     @Override
-    protected void internalHandle(String message, ArrayList<String> arguments, StringBuilder response, fsGui.BigPotatoShell shell) {
-        String absolutePath="/";
-        if(message.isEmpty()){
+    protected void internalHandle(String message, ArrayList<String> arguments, StringBuilder response,
+            fsGui.BigPotatoShell shell) {
+        String absolutePath = "/";
+        if (message.isEmpty()) {
             response.append("No existe el archivo especificado.\n");
             response.append(showHelp());
             return;
@@ -24,7 +25,7 @@ public class ENanoCommand extends BaseCommand {
             new SimpleNano((fsSim.fsFile) result);
             return;
         } else if (result == null) {
-            if(shell.fsManager.createFile(absolutePath, shell.user)){
+            if (shell.fsManager.createFile(absolutePath, shell.user)) {
                 result = shell.fsManager.getElementInFs(absolutePath);
                 new SimpleNano((fsSim.fsFile) result);
                 return;

@@ -27,7 +27,10 @@ public class LoginCommand extends BaseCommand {
         ArrayList<fsUser> users = shell.fsManager.getAllTheUsers();
         for (fsUser user : users) {
             if (user.getName().equals(username)) {
-                if (shell.fsManager.Login(user, password)) {
+                Thread this_t = Thread.currentThread();
+                // TODO
+                System.err.println(this_t.getId());
+                if (shell.fsManager.Login(user, password, this_t)) {
                     if (!shell.addUserToStack(user))
                         response.append("No se pudo iniciar sesión.");
                     else

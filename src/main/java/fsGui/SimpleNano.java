@@ -18,6 +18,10 @@ public class SimpleNano {
     public SimpleNano(fsFile file) {
         this.file = file;
 
+        if (!file.open(Thread.currentThread())) {
+            return;
+        }
+
         // Configuración de la ventana
         frame = new JFrame("ENano Editor - " + file.getName());
         textArea = new JTextArea();
@@ -37,7 +41,6 @@ public class SimpleNano {
         frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         frame.setSize(800, 600);
         frame.setVisible(true);
-        file.open();
         // Setea el contenido del archivo
         textArea.setText(file.read());
 
@@ -66,7 +69,8 @@ public class SimpleNano {
                             } catch (BadLocationException ex) {
                                 ex.printStackTrace();
                             }
-                            JOptionPane.showMessageDialog(frame, "Línea: " + (line + 1) + ", Columna: " + (column + 1), "Posición del cursor", JOptionPane.INFORMATION_MESSAGE);
+                            JOptionPane.showMessageDialog(frame, "Línea: " + (line + 1) + ", Columna: " + (column + 1),
+                                    "Posición del cursor", JOptionPane.INFORMATION_MESSAGE);
                             break;
                     }
                 }
@@ -76,7 +80,8 @@ public class SimpleNano {
 
     private void saveFile() {
         if (file.write(textArea.getText(), true)) {
-            JOptionPane.showMessageDialog(frame, "Archivo guardado correctamente.", "Guardado", JOptionPane.INFORMATION_MESSAGE);
+            JOptionPane.showMessageDialog(frame, "Archivo guardado correctamente.", "Guardado",
+                    JOptionPane.INFORMATION_MESSAGE);
         } else {
             JOptionPane.showMessageDialog(frame, "No se pudo guardar el archivo.", "Error", JOptionPane.ERROR_MESSAGE);
         }

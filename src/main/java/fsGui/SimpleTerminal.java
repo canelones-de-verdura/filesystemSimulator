@@ -6,7 +6,7 @@ import java.awt.*;
 import java.awt.event.*;
 import java.util.ArrayList;
 
-public class SimpleTerminal {
+public class SimpleTerminal implements Runnable {
     JFrame f;
     JTextPane terminal;
     BigPotatoShell shell;
@@ -15,7 +15,8 @@ public class SimpleTerminal {
     Style shellResponseStyle;
     int promptPosition;
 
-    SimpleTerminal() {
+    @Override
+    public void run() {
         f = new JFrame();
         terminal = new JTextPane();
         terminal.setFont(new Font("Monospaced", Font.PLAIN, 13));
@@ -45,14 +46,14 @@ public class SimpleTerminal {
                         command = command.substring(command.indexOf("$") + 1).trim();
                         appendToTerminal("\n", promptStyle);
                         String response;
-                        if(command.isEmpty()) {
+                        if (command.isEmpty()) {
                             response = "";
                         } else {
                             response = shell.proccessCommand(command);
                             shell.commandHistory.add(command);
                             historyIndex = shell.commandHistory.size();
                         }
-                        if(response.equals("dirtyterminal_pleasecleanme")) {
+                        if (response.equals("dirtyterminal_pleasecleanme")) {
                             try {
                                 StyledDocument doc = terminal.getStyledDocument();
                                 // Es la forma que encontré de bypassear el filtro del document
@@ -117,7 +118,7 @@ public class SimpleTerminal {
 
     public void showPrompt() {
         try {
-            if(shell.user == null) {
+            if (shell.user == null) {
                 // inserto la frase de bienvenida
                 StyledDocument doc = terminal.getStyledDocument();
                 String welcome = "Bienvenido a BigPotato!\nLogin $";
@@ -158,7 +159,7 @@ public class SimpleTerminal {
     class TerminalDocumentFilter extends DocumentFilter {
         @Override
         public void remove(FilterBypass fb, int offset, int length) throws BadLocationException {
-            if( offset == -25092004 && length == -25092004 ) {
+            if (offset == -25092004 && length == -25092004) {
                 super.remove(fb, 0, fb.getDocument().getLength());
             }
             if (offset >= promptPosition) {
@@ -167,14 +168,16 @@ public class SimpleTerminal {
         }
 
         @Override
-        public void insertString(FilterBypass fb, int offset, String string, AttributeSet attr) throws BadLocationException {
+        public void insertString(FilterBypass fb, int offset, String string, AttributeSet attr)
+                throws BadLocationException {
             if (offset >= promptPosition) {
                 super.insertString(fb, offset, string, attr);
             }
         }
 
         @Override
-        public void replace(FilterBypass fb, int offset, int length, String text, AttributeSet attrs) throws BadLocationException {
+        public void replace(FilterBypass fb, int offset, int length, String text, AttributeSet attrs)
+                throws BadLocationException {
             if (offset >= promptPosition) {
                 super.replace(fb, offset, length, text, attrs);
             }

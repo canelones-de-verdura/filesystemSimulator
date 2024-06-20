@@ -3,7 +3,6 @@ package fsSim;
 import java.nio.charset.StandardCharsets;
 import java.util.Date;
 import java.util.List;
-import java.util.concurrent.Semaphore;
 
 import com.google.common.hash.Hashing;
 
@@ -18,8 +17,6 @@ public class fsUser {
 
     private Date last_logged_d;
 
-    // Semáforo para evitar accesos concurrentes
-    private Semaphore semi;
     private Thread loggedThread;
 
     private int failed_login_attempts;
@@ -33,36 +30,27 @@ public class fsUser {
         this.shell = shell;
 
         this.loggedThread = null;
-        this.semi = new Semaphore(1);
 
         this.last_logged_d = null;
     }
 
-    public boolean LogIn(String password) {
+    public boolean LogIn(String password, Thread t) {
         if (!this.password.equals(Hashing.sha256().hashString(password, StandardCharsets.UTF_8).toString())) {
             failed_login_attempts++;
             return false;
         }
 
-        if (semi.availablePermits() == 0 || (loggedThread != null && !Thread.currentThread().equals(loggedThread)))
+        if (loggedThread != null && !t.equals(loggedThread))
             return false;
 
-        try {
-            semi.acquire();
-            loggedThread = Thread.currentThread();
-            this.last_logged_d = new Date();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-            System.out.println("🥱");
-            return false;
-        }
+        loggedThread = t;
+        this.last_logged_d = new Date();
 
         return true;
     }
 
     public void LogOut() {
         loggedThread = null;
-        semi.release();
     }
 
     /* Getters */
