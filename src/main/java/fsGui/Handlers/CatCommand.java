@@ -21,7 +21,10 @@ public class CatCommand extends BaseCommand {
             result = ((fsLink) result).getReference();
 
         if (result instanceof fsFile) {
-            if(!((fsFile) result).open()) response.append("No se pudo abrir el archivo.");
+            if (!((fsFile) result).open()) {
+                response.append("No se pudo abrir el archivo.");
+                return;
+            }
             response.append(((fsFile) result).read() != null ? ((fsFile) result).read() : "");
             ((fsFile) result).close();
             return;
