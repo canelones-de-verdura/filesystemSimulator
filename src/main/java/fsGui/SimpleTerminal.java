@@ -6,7 +6,7 @@ import java.awt.*;
 import java.awt.event.*;
 import java.util.ArrayList;
 
-public class SimpleTerminal implements Runnable {
+public class SimpleTerminal {
     JFrame f;
     JTextPane terminal;
     BigPotatoShell shell;
@@ -15,8 +15,7 @@ public class SimpleTerminal implements Runnable {
     Style shellResponseStyle;
     int promptPosition;
 
-    @Override
-    public void run() {
+    public SimpleTerminal() {
         f = new JFrame();
         terminal = new JTextPane();
         terminal.setFont(new Font("Monospaced", Font.PLAIN, 13));
@@ -49,28 +48,10 @@ public class SimpleTerminal implements Runnable {
                         if (command.isEmpty()) {
                             response = "";
                         } else {
-                            response = shell.proccessCommand(command);
-                            shell.commandHistory.add(command);
-                            historyIndex = shell.commandHistory.size();
+                            // Ejecutar la lógica del shell en un hilo separado
+                            ShellWorker worker = new ShellWorker(command);
+                            worker.execute();
                         }
-                        if (response.equals("dirtyterminal_pleasecleanme")) {
-                            try {
-                                StyledDocument doc = terminal.getStyledDocument();
-                                // Es la forma que encontré de bypassear el filtro del document
-                                // Pd: Sí, es mi fecha de cumpleaños en negativo :D (Soy Facu)
-                                doc.remove(-25092004, -25092004);
-                            } catch (BadLocationException ex) {
-                                ex.printStackTrace();
-                            }
-                            showPrompt();
-                            promptPosition = doc.getLength();
-                            terminal.setCaretPosition(doc.getLength());
-                            return;
-                        }
-                        appendToTerminal(response.isEmpty() ? "" : response + "\n", shellResponseStyle);
-                        terminal.setCaretPosition(doc.getLength());
-                        showPrompt();
-                        promptPosition = doc.getLength();
                     } catch (BadLocationException ex) {
                         ex.printStackTrace();
                     }
@@ -153,6 +134,49 @@ public class SimpleTerminal implements Runnable {
             SwingUtilities.invokeLater(() -> terminal.setCaretPosition(doc.getLength()));
         } catch (BadLocationException e) {
             e.printStackTrace();
+        }
+    }
+
+    class ShellWorker extends SwingWorker<String, Void> {
+        private final String command;
+
+        public ShellWorker(String command) {
+            this.command = command;
+        }
+
+        @Override
+        protected String doInBackground() throws Exception {
+            String response = shell.proccessCommand(command);
+            shell.commandHistory.add(command);
+            historyIndex = shell.commandHistory.size();
+            return response;
+        }
+
+        @Override
+        protected void done() {
+            try {
+                String response = get();
+                if (response.equals("dirtyterminal_pleasecleanme")) {
+                    try {
+                        StyledDocument doc = terminal.getStyledDocument();
+                        // Es la forma que encontré de bypassear el filtro del document
+                        // Pd: Sí, es mi fecha de cumpleaños en negativo :D (Soy Facu)
+                        doc.remove(-25092004, -25092004);
+                    } catch (BadLocationException ex) {
+                        ex.printStackTrace();
+                    }
+                    showPrompt();
+                    promptPosition = terminal.getStyledDocument().getLength();
+                    terminal.setCaretPosition(promptPosition);
+                    return;
+                }
+                appendToTerminal(response.isEmpty() ? "" : response + "\n", shellResponseStyle);
+                terminal.setCaretPosition(terminal.getStyledDocument().getLength());
+                showPrompt();
+                promptPosition = terminal.getStyledDocument().getLength();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
     }
 

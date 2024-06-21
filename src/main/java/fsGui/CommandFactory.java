@@ -32,6 +32,7 @@ public class CommandFactory {
         register(new ChownCommand(this));
         register(new HistoryCommand(this));
         register(new TreeCommand(this));
+        register(new TrCommand(this));
     }
 
     public void register(BaseCommand command) {
