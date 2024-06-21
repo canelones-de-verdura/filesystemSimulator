@@ -22,12 +22,12 @@ public class ENanoCommand extends BaseCommand {
         absolutePath = composePath(message, shell.PWD);
         fsSim.fsIElement result = shell.fsManager.getElementInFs(absolutePath);
         if (result instanceof fsSim.fsFile) {
-            new SimpleNano((fsSim.fsFile) result);
+            new SimpleNano((fsSim.fsFile) result, response);
             return;
         } else if (result == null) {
             if (shell.fsManager.createFile(absolutePath, shell.user)) {
                 result = shell.fsManager.getElementInFs(absolutePath);
-                new SimpleNano((fsSim.fsFile) result);
+                new SimpleNano((fsSim.fsFile) result, response);
                 return;
             } else {
                 response.append("No se pudo crear el archivo.");

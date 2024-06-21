@@ -15,10 +15,11 @@ public class SimpleNano {
     JTextArea textArea;
     fsFile file;
 
-    public SimpleNano(fsFile file) {
+    public SimpleNano(fsFile file, StringBuilder response) {
         this.file = file;
 
         if (!file.open()) {
+            response.append("No se pudo abrir el archivo.");
             return;
         }
 
@@ -39,6 +40,12 @@ public class SimpleNano {
 
         // Configurar comportamiento de cierre
         frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        frame.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                file.close();
+            }
+        });
         frame.setSize(800, 600);
         frame.setVisible(true);
         // Setea el contenido del archivo
