@@ -81,25 +81,26 @@ public class fsFile implements fsIElement {
     }
 
     /* Primitivas para manejar archivos */
-    public synchronized boolean open(Thread t) {
+    public synchronized boolean open() {
         if (workingThread != null)
             return false;
 
-        workingThread = t;
+        workingThread = Thread.currentThread();
         last_access_d = new Date();
         return true;
     }
 
     public synchronized boolean close() {
-        if (workingThread == null)
+        if (workingThread == null || !workingThread.equals(Thread.currentThread())) {
             return false;
+        }
 
         workingThread = null;
         return true;
     }
 
     public synchronized boolean write(String new_data, boolean overwrite) {
-        if (workingThread == null)
+        if (workingThread == null || !workingThread.equals(Thread.currentThread()))
             return false;
 
         if (overwrite || (data == null)) {
@@ -112,7 +113,10 @@ public class fsFile implements fsIElement {
         return true;
     }
 
-    public String read() {
+    public synchronized String read() {
+        if (workingThread == null || !workingThread.equals(Thread.currentThread()))
+            return "";
+
         last_access_d = new Date();
         return data;
     }

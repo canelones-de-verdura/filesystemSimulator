@@ -18,7 +18,7 @@ public class SimpleNano {
     public SimpleNano(fsFile file) {
         this.file = file;
 
-        if (!file.open(Thread.currentThread())) {
+        if (!file.open()) {
             return;
         }
 
@@ -85,6 +85,7 @@ public class SimpleNano {
         } else {
             JOptionPane.showMessageDialog(frame, "No se pudo guardar el archivo.", "Error", JOptionPane.ERROR_MESSAGE);
         }
+
         file.close();
         frame.dispose();
     }

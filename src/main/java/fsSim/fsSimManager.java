@@ -330,7 +330,7 @@ public class fsSimManager {
                 user.getGUID(), user.getHome(), user.getShell());
 
         fsFile passwd = (fsFile) getElementInFs("/etc/passwd");
-        passwd.open(Thread.currentThread());
+        passwd.open();
         if (opt == 0) {
             if (passwd.read() != null)
                 line = "\n" + line;
@@ -364,7 +364,7 @@ public class fsSimManager {
         String line = String.format("%s:%s\n", group.getName(), group.getGUID());
 
         fsFile passwd = (fsFile) getElementInFs("/etc/group");
-        passwd.open(Thread.currentThread());
+        passwd.open();
         passwd.write(line, false);
         passwd.close();
     }

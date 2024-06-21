@@ -21,7 +21,7 @@ public class CatCommand extends BaseCommand {
             result = ((fsLink) result).getReference();
 
         if (result instanceof fsFile) {
-            ((fsFile) result).open(Thread.currentThread());
+            ((fsFile) result).open();
             response.append(((fsFile) result).read() != null ? ((fsFile) result).read() : "");
             ((fsFile) result).close();
             return;
