@@ -45,16 +45,9 @@ public class SimpleTerminal implements Runnable {
                             // solo tomo el comando después del caracter $
                             command = command.substring(command.indexOf("$") + 1).trim();
                             appendToTerminal("\n", promptStyle);
-                            String response;
-                            if (command.isEmpty()) {
-                                response = "";
-                            } else {
-                                // Ejecutar la lógica del shell en el hilo actual
-                                response = shell.proccessCommand(command);
-                                shell.commandHistory.add(command);
-                                historyIndex = shell.commandHistory.size();
+                            if (!command.isEmpty()) {
+                                processCommand(command);
                             }
-                            appendToTerminal(response.isEmpty() ? "" : response + "\n", shellResponseStyle);
                             showPrompt();
                         } catch (BadLocationException ex) {
                             ex.printStackTrace();
@@ -103,15 +96,17 @@ public class SimpleTerminal implements Runnable {
     }
 
     public void showPrompt() {
-        try {
-            StyledDocument doc = terminal.getStyledDocument();
-            String prompt = (shell.user == null) ? "Bienvenido a BigPotato!\nLogin $" : shell.USER + "@" + shell.HOST + ":" + shell.PWD + " $ ";
-            promptPosition = doc.getLength();
-            doc.insertString(promptPosition, prompt, promptStyle);
-            terminal.setCaretPosition(doc.getLength());
-        } catch (BadLocationException e) {
-            e.printStackTrace();
-        }
+        SwingUtilities.invokeLater(() -> {
+            try {
+                StyledDocument doc = terminal.getStyledDocument();
+                String prompt = (shell.user == null) ? "Bienvenido a BigPotato!\nLogin $" : shell.USER + "@" + shell.HOST + ":" + shell.PWD + " $ ";
+                promptPosition = doc.getLength();
+                doc.insertString(promptPosition, prompt, promptStyle);
+                terminal.setCaretPosition(doc.getLength());
+            } catch (BadLocationException e) {
+                e.printStackTrace();
+            }
+        });
     }
 
     public void appendToTerminal(String text, Style style) {
@@ -136,6 +131,14 @@ public class SimpleTerminal implements Runnable {
                 e.printStackTrace();
             }
         });
+    }
+
+    public void processCommand(String command) {
+        // Ejecutar la lógica del shell en el hilo actual
+        String response = shell.proccessCommand(command);
+        shell.commandHistory.add(command);
+        historyIndex = shell.commandHistory.size();
+        appendToTerminal(response.isEmpty() ? "" : response + "\n", shellResponseStyle);
     }
 
     @Override
