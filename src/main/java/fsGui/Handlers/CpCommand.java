@@ -87,12 +87,6 @@ public class CpCommand extends BaseCommand {
         ((fsDir) destino).move(origen);
         if (origen instanceof fsDir)
             ((fsDir) origen).changeParent(destino);
-
-        // Borramos original
-        // Recuperamos la referencia al verdero destino
-        fsDir padre_origen = (fsDir) shell.fsManager
-                .getElementInFs(absoluteOrigen.substring(0, absoluteOrigen.lastIndexOf("/")));
-        padre_origen.remove(nombre_origen);
     }
 
     @Override
@@ -100,7 +94,7 @@ public class CpCommand extends BaseCommand {
         StringBuilder help = new StringBuilder();
         help.append("--------------------------------------------------------\n");
         help.append("Uso: cp [argumentos] [origen] [destino]\n");
-        help.append("Mueve el archivo origen al destino.\n");
+        help.append("Copia el archivo origen al destino.\n");
         help.append("Argumentos:\n");
         help.append(" -r: Renombra el archivo en el destino.\n");
         help.append("--------------------------------------------------------");
