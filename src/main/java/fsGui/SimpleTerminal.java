@@ -30,7 +30,8 @@ public class SimpleTerminal {
         f.addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
-                shell.popUserFromStack();
+                if(shell.user != null)
+                    shell.popUserFromStack();
             }
         });
 
