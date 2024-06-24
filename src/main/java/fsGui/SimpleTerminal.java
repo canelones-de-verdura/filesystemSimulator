@@ -25,6 +25,8 @@ public class SimpleTerminal {
         scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
         scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         shell = new BigPotatoShell();
+        
+        f.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
         StyledDocument doc = terminal.getStyledDocument();
         promptStyle = doc.addStyle("PromptStyle", null);
@@ -105,7 +107,6 @@ public class SimpleTerminal {
 
         f.add(scrollPane, BorderLayout.CENTER);
         f.setSize(600, 450);
-        f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         f.setVisible(true);
 
         shell.commandHistory = new ArrayList<>();
