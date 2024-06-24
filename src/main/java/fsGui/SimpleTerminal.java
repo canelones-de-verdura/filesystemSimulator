@@ -31,7 +31,7 @@ public class SimpleTerminal {
             @Override
             public void windowClosing(WindowEvent e) {
                 if(shell.user != null)
-                    shell.popUserFromStack();
+                    shell.proccessCommand("exit");
             }
         });
 
