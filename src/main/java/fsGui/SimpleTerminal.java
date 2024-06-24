@@ -27,6 +27,12 @@ public class SimpleTerminal {
         shell = new BigPotatoShell();
         
         f.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        f.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                shell.popUserFromStack();
+            }
+        });
 
         StyledDocument doc = terminal.getStyledDocument();
         promptStyle = doc.addStyle("PromptStyle", null);
